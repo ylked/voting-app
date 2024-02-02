@@ -1,0 +1,20 @@
+_     ____ _____ _  _      _____       ____  _____ ____  _     _  ____ _____
+/ \ |\/  _ Y__ __Y \/ \  /|/  __/      / ___\/  __//  __\/ \ |\/ \/   _Y  __/
+| | //| / \| / \ | || |\ ||| |  ______ |    \|  \  |  \/|| | //| ||  / |  \
+| \// | \_/| | | | || | \||| |_//\____\\___ ||  /_ |    /| \// | ||  \_|  /_
+\__/  \____/ \_/ \_/\_/  \|\____\      \____/\____\\_/\_\\__/  \_/\____|____\
+
+${Ansi.BLUE}----------------------------------------------------------------------------------------------------------------
+${Ansi.BLUE}Service WEB fournissant des API REST permettant de gérer tout les aspects liés aux votations.
+${Ansi.BLUE}S'apparente à un bureau de vote physique
+${Ansi.BLUE}
+${Ansi.BLUE}Fonctionnalités principales:
+${Ansi.BLUE}  - Demande d'autorisationDto de vote
+${Ansi.BLUE}  - Fonctionnalité de votes
+${Ansi.BLUE}
+
+${Ansi.RED}Profile: ${spring.profiles.active}
+
+${Ansi.GREEN}Swagger:            /swagger-ui/index.html
+${Ansi.GREEN}H2 (if applicable): ${spring.h2.console.path}
+${Ansi.BLUE}----------------------------------------------------------------------------------------------------------------

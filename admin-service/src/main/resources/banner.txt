@@ -1,0 +1,26 @@
+            ___
+            (   )               .-.                                                          .-.
+  .---.   .-.| | ___ .-. .-.   ( __) ___ .-.              .--.     .--.  ___ .-.   ___  ___ ( __) .--.     .--.
+ / .-, \ /   \ |(   )   '   \  (''")(   )   \           /  _  \   /    \(   )   \ (   )(   )(''")/    \   /    \
+(__) ; ||  .-. | |  .-.  .-. ;  | |  |  .-. . .------. . .' `. ; |  .-. ;| ' .-. ; | |  | |  | ||  .-. ; |  .-. ;
+  .'`  || |  | | | |  | |  | |  | |  | |  | |(________)| '   | | |  | | ||  / (___)| |  | |  | ||  |(___)|  | | |
+ / .'| || |  | | | |  | |  | |  | |  | |  | |          _\_`.(___)|  |/  || |       | |  | |  | ||  |     |  |/  |
+| /  | || |  | | | |  | |  | |  | |  | |  | |         (   ). '.  |  ' _.'| |       | |  | |  | ||  | ___ |  ' _.'
+; |  ; || '  | | | |  | |  | |  | |  | |  | |          | |  `\ | |  .'.-.| |       ' '  ; '  | ||  '(   )|  .'.-.
+' `-'  |' `-'  / | |  | |  | |  | |  | |  | |          ; '._,' ' '  `-' /| |        \ `' /   | |'  `-' | '  `-' /
+`.__.'_. `.__,' (___)(___)(___)(___)(___)(___)          '.___.'   `.__.'(___)        '_.'   (___)`.__,'   `.__.'
+
+${Ansi.BLUE}----------------------------------------------------------------------------------------------------------------
+${Ansi.BLUE}Service WEB fournissant des API REST permettant de gérer tout les aspects administratifs de campagnes de votes
+${Ansi.BLUE}
+${Ansi.BLUE}Fonctionnalités principales:
+${Ansi.BLUE}  - Création/Modification de campagne de votes
+${Ansi.BLUE}  - Configuration des objets des campagnes
+${Ansi.BLUE}  - Gestion des autorisations de votes
+${Ansi.BLUE}
+
+${Ansi.RED}Profile: ${spring.profiles.active}
+
+${Ansi.GREEN}Swagger:            /swagger-ui/index.html
+${Ansi.GREEN}H2 (if applicable): ${spring.h2.console.path}
+${Ansi.BLUE}----------------------------------------------------------------------------------------------------------------
