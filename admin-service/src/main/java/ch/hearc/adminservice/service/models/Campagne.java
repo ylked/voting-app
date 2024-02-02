@@ -40,10 +40,10 @@ public class Campagne {
      */
     public static Campagne mapFromEntity(CampagneEntity campagneEntity){
         //mapping des objets liés
-        //List<Objet> objets = campagneEntity.getObjets().stream().map(Objet::mapFromEntity).toList();
+        List<Objet> objets = campagneEntity.getObjets().stream().map(Objet::mapFromEntity).toList();
 
         return new Campagne(
-                campagneEntity.getNom(), campagneEntity.getIdentifiant(), campagneEntity.getStatus());
+                campagneEntity.getNom(), campagneEntity.getIdentifiant(), campagneEntity.getStatus(),objets);
 
     }
     private Campagne(String nom){

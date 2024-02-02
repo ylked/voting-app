@@ -3,6 +3,7 @@ package ch.hearc.votingservice.service.models;
 
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Autorisation {
 
@@ -37,12 +38,12 @@ public class Autorisation {
         return campagneId;
     }
 
-    public static Autorisation nouvelleAutorisation(String identifiant, String autorisationCode, String demandeId, String campagneId){
-        Objects.requireNonNull(identifiant);
+    public static Autorisation nouvelleAutorisation(String autorisationCode, String demandeId, String campagneId){
+
         Objects.requireNonNull(autorisationCode);
         Objects.requireNonNull(demandeId);
         Objects.requireNonNull(campagneId);
-        return new Autorisation(identifiant,autorisationCode,demandeId,campagneId);
+        return new Autorisation(UUID.randomUUID().toString(),autorisationCode,demandeId,campagneId);
 
     }
 

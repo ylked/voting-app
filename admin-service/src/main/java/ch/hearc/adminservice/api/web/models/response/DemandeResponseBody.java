@@ -7,6 +7,38 @@ import ch.hearc.adminservice.service.models.Demande;
  */
 public class DemandeResponseBody {
 
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setIdentifiant(String identifiant) {
+        this.identifiant = identifiant;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public void setCampagneId(String campagneId) {
+        this.campagneId = campagneId;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public String getCampagneId() {
+        return campagneId;
+    }
+
     private String nom;
 
     private String identifiant;
@@ -22,8 +54,9 @@ public class DemandeResponseBody {
         this.campagneId = campagneId;
     }
 
+
     public static DemandeResponseBody fromDemande(Demande demande) {
         return new DemandeResponseBody(
-                demande.getNom(), demande.getPrenom(), demande.getIdentifiant(), demande.getCampagneId());
+                demande.getNom(),  demande.getIdentifiant(), demande.getPrenom(),demande.getCampagneId());
     }
 }

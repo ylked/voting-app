@@ -45,6 +45,12 @@ public class Campagne {
         this.objets = objets;
     }
 
+    public Campagne(String nom, String identifiant, CampagneStatus status) {
+        this.nom = nom;
+        this.identifiant = identifiant;
+        this.status = status;
+    }
+
 
 
     public String getNom() {
@@ -61,10 +67,10 @@ public class Campagne {
         return new Campagne(
                 campagneResponseBody.getNom(),
                 campagneResponseBody.getIdentifiant(),
-                campagneResponseBody.getStatus(),
-                campagneResponseBody.getObjets().stream().map(objetResponseBody -> {
-                    return new Objet(campagneResponseBody.getNom(), campagneResponseBody.getIdentifiant());
-                }).toList()
+                campagneResponseBody.getStatus()
+                //campagneResponseBody.getObjets().stream().map(objetResponseBody -> {
+                //    return new Objet(campagneResponseBody.getNom(), campagneResponseBody.getIdentifiant());
+                //}).toList()
         );
     }
 }
