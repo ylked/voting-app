@@ -1,0 +1,40 @@
+services:
+
+  active_mq:
+    image: apache/activemq-artemis:latest-alpine
+    container_name: rabbitmq
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      - ARTEMIS_USER=mq
+      - ARTEMIS_PASSWORD=mq
+
+
+  admin_service_db:
+    image: mysql:8.2.0-oracle
+    container_name: admin-db
+    ports:
+      - "3380:3306"
+    volumes:
+      - "mysql_admin:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    restart: always
+
+  voting_service_db:
+    image: mysql:8.2.0-oracle
+    container_name: voting-db
+    ports:
+      - "3381:3306"
+    volumes:
+      - "mysql_voting:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    restart: always
+
+volumes:
+  mysql_admin:
+  mysql_voting:
+
+
