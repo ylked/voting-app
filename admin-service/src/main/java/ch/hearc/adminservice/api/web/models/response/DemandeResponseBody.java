@@ -15,15 +15,32 @@ public class DemandeResponseBody {
 
     private String campagneId;
 
-    public DemandeResponseBody(String nom, String identifiant, String prenom, String campagneId) {
+
+    private DemandeResponseBody(String nom, String identifiant, String prenom, String campagneId) {
         this.nom = nom;
         this.identifiant = identifiant;
         this.prenom = prenom;
         this.campagneId = campagneId;
     }
 
-    public static DemandeResponseBody fromDemande(Demande demande) {
+    public String getNom() {
+        return nom;
+    }
+
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public String getCampagneId() {
+        return campagneId;
+    }
+
+    public static DemandeResponseBody mapFromDemande(Demande demande) {
         return new DemandeResponseBody(
-                demande.getNom(), demande.getPrenom(), demande.getIdentifiant(), demande.getCampagneId());
+                demande.getNom(),  demande.getIdentifiant(), demande.getPrenom(),demande.getCampagneId());
     }
 }

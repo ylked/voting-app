@@ -1,5 +1,6 @@
 package ch.hearc.adminservice.service.impl;
 
+import ch.hearc.adminservice.jms.JmsMessageProducteur;
 import ch.hearc.adminservice.repository.AutorisationRepository;
 import ch.hearc.adminservice.repository.CampagneRespository;
 import ch.hearc.adminservice.repository.DemandeRepository;
@@ -7,7 +8,6 @@ import ch.hearc.adminservice.repository.entity.AutorisationEntity;
 import ch.hearc.adminservice.repository.entity.CampagneEntity;
 import ch.hearc.adminservice.repository.entity.DemandeEntity;
 import ch.hearc.adminservice.service.AutorisationService;
-import ch.hearc.adminservice.jms.JmsMessageProducteur;
 import ch.hearc.adminservice.service.models.Autorisation;
 import ch.hearc.adminservice.service.models.Demande;
 import ch.hearc.adminservice.service.models.RefusAutorisation;
@@ -60,7 +60,18 @@ public class AutorisationServiceImpl implements AutorisationService {
 
     }
 
-    ;
+
+    @Override
+    public List<Autorisation> getAutorisations(){
+
+        List<Autorisation> autorisations = new ArrayList<>();
+
+        autorisationRepository.findAll().iterator().forEachRemaining(autorisationEntity -> {
+            autorisations.add(Autorisation.mapFromEntity(autorisationEntity));
+        });
+
+        return autorisations;
+    }
 
     @Override
     public ValidateDemandeResult autoriseDemande(String identifiant) throws JsonProcessingException {
@@ -69,7 +80,6 @@ public class AutorisationServiceImpl implements AutorisationService {
         Optional<DemandeEntity> demandeEntity = demandeRepository.findByIdentifiant(identifiant);
 
         if(demandeEntity.isPresent()){
-
 
             //génération de l'autorisation
             Demande demande = new Demande(demandeEntity.get());
@@ -80,7 +90,7 @@ public class AutorisationServiceImpl implements AutorisationService {
             AutorisationEntity autorisationEntity = Autorisation.toEntity(autorisation);
             autorisationEntity.setCampagneEntity(campagneEntity);
 
-            //Persistence de l'autorisation
+            //Persistence de l'autorisation, suppression de la demande
             autorisationRepository.save(autorisationEntity);
             jmsMessageProducteur.sendAutorisation(Autorisation.toJmsMessage(autorisation));
             demandeRepository.delete(demandeEntity.get());
@@ -97,7 +107,6 @@ public class AutorisationServiceImpl implements AutorisationService {
 
         //check si cammpagneId toujours ok (existant et openend)
         Optional<CampagneEntity> optionnalCampagne = campagneRepository.findByIdentifiant(demande.getCampagneId());
-
 
         if(optionnalCampagne.isPresent()){
 

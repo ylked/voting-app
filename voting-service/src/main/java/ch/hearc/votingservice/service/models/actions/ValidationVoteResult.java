@@ -1,5 +1,7 @@
 package ch.hearc.votingservice.service.models.actions;
 
+import ch.hearc.votingservice.service.models.Vote;
+
 public class ValidationVoteResult {
 
     private Boolean validationOk = Boolean.FALSE;
@@ -47,22 +49,22 @@ public class ValidationVoteResult {
         this.message = message;
     }
 
-    public static ValidationVoteResult ko(String campagneIdentifiant, String autorisationCode, String objetIdentifiant, String message) {
+    public static ValidationVoteResult ko(Vote vote, String message) {
         ValidationVoteResult validationVoteResult = new ValidationVoteResult();
-        validationVoteResult.campagneIdentifiant = campagneIdentifiant;
+        validationVoteResult.campagneIdentifiant = vote.getCampagneIdentifiant();
         validationVoteResult.validationOk = Boolean.FALSE;
-        validationVoteResult.autorisationCode = autorisationCode;
-        validationVoteResult.objetIdentifiant = objetIdentifiant;
+        validationVoteResult.autorisationCode = vote.getAutorisationCode();
+        validationVoteResult.objetIdentifiant = vote.getObjetIdentifiant();
         validationVoteResult.message = message;
         return validationVoteResult;
     }
 
-    public static ValidationVoteResult ok(String campagneIdentifiant, String autorisationCode, String objetIdentifiant, String message) {
+    public static ValidationVoteResult ok(Vote vote, String message) {
         ValidationVoteResult validationVoteResult = new ValidationVoteResult();
-        validationVoteResult.campagneIdentifiant = campagneIdentifiant;
+        validationVoteResult.campagneIdentifiant = vote.getCampagneIdentifiant();
         validationVoteResult.validationOk = Boolean.TRUE;
-        validationVoteResult.autorisationCode = autorisationCode;
-        validationVoteResult.objetIdentifiant = objetIdentifiant;
+        validationVoteResult.autorisationCode = vote.getAutorisationCode();
+        validationVoteResult.objetIdentifiant = vote.getObjetIdentifiant();
         validationVoteResult.message = message;
         return validationVoteResult;
     }

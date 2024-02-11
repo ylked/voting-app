@@ -2,6 +2,7 @@ package ch.hearc.adminservice.service.models;
 
 import ch.hearc.adminservice.repository.entity.DemandeEntity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Demande {
@@ -13,6 +14,10 @@ public class Demande {
     private String prenom;
 
     private String campagneId;
+
+    public static Demande fromDto(String identifiant, String nom, String prenom, String campagneId) {
+        return new Demande(nom,prenom,campagneId,identifiant);
+    }
 
     public String getNom() {
         return nom;
@@ -42,11 +47,16 @@ public class Demande {
         return identifiant;
     }
 
-    public Demande(String nom, String prenom, String campagneId) {
+    private Demande(String nom, String prenom, String campagneId) {
         this.nom = nom;
         this.prenom = prenom;
         this.campagneId = campagneId;
         this.identifiant = UUID.randomUUID().toString();
+    }
+
+    private Demande(String nom, String prenom, String campagneId,String identifiant) {
+        this(nom,prenom,campagneId);
+        this.identifiant = identifiant;
     }
 
     public Demande () {}
@@ -60,6 +70,14 @@ public class Demande {
         return demandeEntity;
     }
 
+    public static Demande nouvelleDemande(String nom, String prenom, String campagneId){
+
+        Objects.requireNonNull(nom);
+        Objects.requireNonNull(prenom);
+        Objects.requireNonNull(campagneId);
+        return new Demande(nom,prenom,campagneId);
+
+    }
     public Demande(DemandeEntity demandeEntity){
         this.nom = demandeEntity.getNom();
         this.prenom = demandeEntity.getPrenom();

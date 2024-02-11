@@ -5,23 +5,29 @@ import ch.hearc.votingservice.jms.models.DemandeMessage;
 import ch.hearc.votingservice.jms.models.VoteMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.TextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Composant permettant la soumission de message sur le bus jms
+ */
 @Component
 public class JmsProducteurImpl implements JmsProducteur {
 
-    @Value("${spring.activemq.send.demande.queue}")
+    @Value("${spring.activemq.demande.submited.queue}")
     String demandeQueue;
 
-    @Value("${spring.activemq.send.vote.queue}")
+    @Value("${spring.activemq.vote.submit.queue}")
     String voteQueue;
-
 
     @Autowired
     JmsTemplate jmsTemplate;
+
+    Logger logger = LoggerFactory.getLogger(JmsProducteurImpl.class);
 
     @Override
     public void sendDemande(DemandeMessage demande)  {
@@ -33,7 +39,7 @@ public class JmsProducteurImpl implements JmsProducteur {
                 message.setText(jsonObj);
                 return message;
             });
-            System.out.println("Message send to queue: " + demandeQueue + ", message: " + jsonObj);
+            logger.info("Message send to queue: " + demandeQueue + ", message: " + jsonObj);
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -50,7 +56,7 @@ public class JmsProducteurImpl implements JmsProducteur {
                 message.setText(jsonObj);
                 return message;
             });
-            System.out.println("Message send to queue: " + voteQueue + ", message: " + jsonObj);
+            logger.info("Message send to queue: " + voteQueue + ", message: " + jsonObj);
         }
         catch (Exception ex) {
             ex.printStackTrace();

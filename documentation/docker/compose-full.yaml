@@ -1,0 +1,84 @@
+services:
+
+  admin-service:
+    container_name: admin-service
+    build:
+      context: ../../admin-service
+      dockerfile: Dockerfile
+    image: admin-service
+    environment:
+      - ACTIVEMQ_URI=tcp://active-mq:61616
+      - SERVER_PORT=8080
+      - MYSQL_DB=jdbc:mysql://admin-db:3306/admin-service?createDatabaseIfNotExist=true
+    ports:
+      - 8880:8080
+    networks:
+      - voting-app
+    depends_on:
+      - active-mq
+      - admin-service-db
+
+  voting-service:
+    container_name: voting-service
+    build:
+      context: ../../voting-service
+      dockerfile: Dockerfile
+    image: voting-service
+    environment:
+      - ACTIVEMQ_URI=tcp://active-mq:61616
+      - ADMIN_SERVICE_URI=http://admin-service:8880
+      - SERVER_PORT=8081
+      - MYSQL_DB=jdbc:mysql://voting-db:3306/voting-service?createDatabaseIfNotExist=true
+    ports:
+      - 8881:8081
+    networks:
+      - voting-app
+    depends_on:
+      - active-mq
+      - voting-service-db
+
+  active-mq:
+    image: apache/activemq-artemis:latest-alpine
+    container_name: active-mq
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      - ARTEMIS_USER=mq
+      - ARTEMIS_PASSWORD=mq
+    networks:
+      - voting-app
+
+  admin-service-db:
+    image: mysql:8.2.0-oracle
+    container_name: admin-db
+    ports:
+      - "3380:3306"
+    volumes:
+      - "mysql_admin:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    restart: always
+    networks:
+      - voting-app
+
+  voting-service-db:
+    image: mysql:8.2.0-oracle
+    container_name: voting-db
+    ports:
+      - "3381:3306"
+    volumes:
+      - "mysql_voting:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    restart: always
+    networks:
+      - voting-app
+
+volumes:
+  mysql_admin:
+  mysql_voting:
+
+networks:
+  voting-app:
+    driver: bridge

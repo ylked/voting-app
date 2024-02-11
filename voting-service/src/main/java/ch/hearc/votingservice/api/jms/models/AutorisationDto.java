@@ -11,10 +11,7 @@ import jakarta.validation.constraints.Size;
  */
 public class AutorisationDto {
 
-    @NotEmpty
-    @NotNull
-    @Size(min = 5)
-    private String identifiant;
+
     @NotEmpty
     @NotNull
     @Size(min = 5)
@@ -28,9 +25,6 @@ public class AutorisationDto {
     @Size(min = 5)
     private String campagneId;
 
-    public String getIdentifiant() {
-        return identifiant;
-    }
 
 
     public String getAutorisationCode() {
@@ -48,7 +42,7 @@ public class AutorisationDto {
     }
 
     public static Autorisation toAutorisation(AutorisationDto autorisationDto){
-        return Autorisation.nouvelleAutorisation(autorisationDto.identifiant,
+        return Autorisation.nouvelleAutorisation(
                 autorisationDto.autorisationCode,
                 autorisationDto.demandeId,
                 autorisationDto.campagneId);

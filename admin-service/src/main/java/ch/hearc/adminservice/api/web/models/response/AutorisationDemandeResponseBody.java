@@ -6,23 +6,18 @@ public class AutorisationDemandeResponseBody {
 
     private String campagneId;
 
-    public AutorisationDemandeResponseBody() {
-    }
+    private String message = "Autorisation successfully created";
 
     public String getAutorisationCode() {
         return autorisationCode;
-    }
-
-    public void setAutorisationCode(String autorisationCode) {
-        this.autorisationCode = autorisationCode;
     }
 
     public String getCampagneId() {
         return campagneId;
     }
 
-    public void setCampagneId(String campagneId) {
-        this.campagneId = campagneId;
+    public String getMessage() {
+        return message;
     }
 
     public AutorisationDemandeResponseBody(String autorisationCode, String campagneId) {

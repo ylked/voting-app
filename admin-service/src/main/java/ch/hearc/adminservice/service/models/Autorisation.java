@@ -58,6 +58,14 @@ public class Autorisation {
     public Autorisation() {
     }
 
+    public static Autorisation mapFromEntity(AutorisationEntity autorisationEntity) {
+        Autorisation autorisation = new Autorisation();
+        autorisation.setIdentifiant(autorisationEntity.getIdentifiant());
+        autorisation.setAutorisationCode(autorisationEntity.getAutorisationCode());
+        autorisation.setCampagneId(autorisationEntity.getCampagneEntity().getIdentifiant());
+        return autorisation;
+    }
+
     public String getIdentifiant() {
         return identifiant;
     }

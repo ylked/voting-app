@@ -1,4 +1,4 @@
-package ch.hearc.adminservice.api.web.models;
+package ch.hearc.votingservice.api.web.models.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

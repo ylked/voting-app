@@ -3,6 +3,7 @@ package ch.hearc.adminservice.repository.entity;
 import ch.hearc.adminservice.shared.CampagneStatus;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,12 +22,12 @@ public class CampagneEntity {
         return objets;
     }
 
-    public void setObjets(List<ObjetEntity> objets) {
-        this.objets = objets;
+    public void addObjet(ObjetEntity objet) {
+        this.objets.add(objet);
     }
 
-    @OneToMany(mappedBy = "campagneEntity")
-    private List<ObjetEntity> objets;
+    @OneToMany(mappedBy = "campagneEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ObjetEntity> objets = new ArrayList<>();
 
     public CampagneEntity() {}
 
@@ -38,6 +39,7 @@ public class CampagneEntity {
         this.status = status;
     }
 
+    @Enumerated(EnumType.STRING)
     private CampagneStatus status;
 
     public CampagneEntity(String identifiant, String nom, CampagneStatus status) {

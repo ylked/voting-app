@@ -1,5 +1,6 @@
 package ch.hearc.votingservice.service.impl;
 
+import ch.hearc.votingservice.api.jms.impl.JmsMessageListenerImpl;
 import ch.hearc.votingservice.jms.models.DemandeMessage;
 import ch.hearc.votingservice.jms.models.VoteMessage;
 import ch.hearc.votingservice.remote.impl.Error400Exception;
@@ -14,18 +15,20 @@ import ch.hearc.votingservice.jms.JmsProducteur;
 import ch.hearc.votingservice.service.models.Autorisation;
 import ch.hearc.votingservice.service.models.Demande;
 import ch.hearc.votingservice.remote.AdminRemoteServiceClient;
+import ch.hearc.votingservice.service.models.Vote;
 import ch.hearc.votingservice.service.models.actions.CreateDemandeAutorisationResult;
 import ch.hearc.votingservice.service.models.actions.SendVoteResult;
 import ch.hearc.votingservice.service.models.actions.ValidateAutorisationResult;
 import ch.hearc.votingservice.service.models.actions.ValidationVoteResult;
+import ch.hearc.votingservice.shared.DemandeStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AutorisationServiceImpl implements AutorisationService {
@@ -38,6 +41,8 @@ public class AutorisationServiceImpl implements AutorisationService {
     VotantRepository votantRepository;
     @Autowired
     AdminRemoteServiceClient adminRemoteServiceClient;
+
+    Logger logger = LoggerFactory.getLogger(AutorisationServiceImpl.class);
 
 
 
@@ -74,7 +79,7 @@ public class AutorisationServiceImpl implements AutorisationService {
     /**
      * Validation de l'autorisation reçue
      * Une fois validée, la demande interne liée sera effacée, et une instance de Votant sera persisté
-     * @param autorisationDto l'autorisation à traitée
+     * @param autorisation l'autorisation à traitée
      * @return le résultat de l'opération
      */
     @Override
@@ -107,63 +112,61 @@ public class AutorisationServiceImpl implements AutorisationService {
 
             }else{
                 DemandeEntity demandeEntityOnError = demandeEntity.get();
-                demandeEntityOnError.setOnError(Boolean.TRUE);
+                demandeEntityOnError.setStatus(DemandeStatus.ERROR);
                 demandeRepository.save(demandeEntityOnError);
 
                 return ValidateAutorisationResult.ko(autorisation.getDemandeId(), autorisation.getCampagneId(), "Campagne with identifiant: " + autorisation.getCampagneId() + " doesn't exist or is not longer OPENED");
             }
 
         }else{
-            DemandeEntity demandeEntityOnError = demandeEntity.get();
-            demandeEntityOnError.setOnError(Boolean.TRUE);
-            demandeRepository.save(demandeEntityOnError);
 
             return ValidateAutorisationResult.ko(autorisation.getDemandeId(), autorisation.getCampagneId(), "Demande with identifiant: " + autorisation.getDemandeId() + " doesn't exist");
         }
     }
 
+    /**
+     * Validation d'un vote avant soumission
+     * @param vote l'instance du vote
+     * @return le résultat de l'opération
+     */
     @Override
-    public ValidationVoteResult validateVoteForCampagne(String campagneIdentifiant, String autorisationCode, String objetIdentifiant) {
+    public ValidationVoteResult validateVoteForCampagne(Vote vote) {
 
         //Récupération du votant avec code d'autorisation et identifiant de campagne
-        Optional<VotantEntity> votantEntity = votantRepository.findByAutorisationCodeAndCampagneIdentifiant(autorisationCode,campagneIdentifiant);
+        Optional<VotantEntity> votantEntity = votantRepository.findByAutorisationCodeAndCampagneIdentifiant(vote.getAutorisationCode(),vote.getCampagneIdentifiant());
 
         if(votantEntity.isPresent()){
             //Validation de la campagne et de l'objet
-            Optional<CampagneResponseBody> campagneOptional = adminRemoteServiceClient.getCampagneByIdentifiant(campagneIdentifiant);
+            Optional<CampagneResponseBody> campagneOptional = adminRemoteServiceClient.getCampagneByIdentifiant(vote.getCampagneIdentifiant());
 
             if(campagneOptional.isPresent()){
 
                 CampagneResponseBody campagne = campagneOptional.get();
 
-                Optional<ObjetResponseBody> objetToFind = campagne.getObjets().stream().filter(objet -> {
-                    return objet.getIdentifiant().equals(objetIdentifiant);
-                }).findFirst();
+                Optional<ObjetResponseBody> objetToFind = campagne.getObjets().stream().filter(objet -> objet.getIdentifiant().equals(vote.getObjetIdentifiant())).findFirst();
 
                 if (objetToFind.isPresent()){
 
-
-
-                    return ValidationVoteResult.ok(campagneIdentifiant,autorisationCode,objetIdentifiant,"Vote successfully validated");
+                    return ValidationVoteResult.ok(vote,"Vote successfully validated");
 
                 }else{
-                    return ValidationVoteResult.ko(campagneIdentifiant,autorisationCode,objetIdentifiant,"No objet found with objetIdentifiant provided");
+                    return ValidationVoteResult.ko(vote,"No objet found with objetIdentifiant provided");
                 }
 
             }else{
-                return ValidationVoteResult.ko(campagneIdentifiant,autorisationCode,objetIdentifiant,"No campagne found with campagneIdentifiant provided");
+                return ValidationVoteResult.ko(vote,"No campagne found with campagneIdentifiant provided");
             }
 
         }else{
-            return ValidationVoteResult.ko(campagneIdentifiant,autorisationCode,objetIdentifiant,"No votant found with campagneIdentifiant and autorisationCode provided");
+            return ValidationVoteResult.ko(vote,"No votant found with campagneIdentifiant and autorisationCode provided");
         }
     }
 
     @Override
-    public SendVoteResult sendVoteForCampagne(String campagneIdentifiant, String autorisationCode, String objetIdentifiant) {
+    public SendVoteResult sendVoteForCampagne(Vote vote) {
 
         //Récupération du votant avec code d'autorisation et identifiant de campagne
-        Optional<VotantEntity> votantEntityOptionnal = votantRepository.findByAutorisationCodeAndCampagneIdentifiant(autorisationCode,campagneIdentifiant);
+        Optional<VotantEntity> votantEntityOptionnal = votantRepository.findByAutorisationCodeAndCampagneIdentifiant(vote.getAutorisationCode(), vote.getCampagneIdentifiant());
 
         if(votantEntityOptionnal.isPresent()){
 
@@ -171,14 +174,43 @@ public class AutorisationServiceImpl implements AutorisationService {
             votantEntity.setVoteDone(Boolean.TRUE);
             votantRepository.save(votantEntity);
 
-            VoteMessage voteMessage = new VoteMessage(campagneIdentifiant,objetIdentifiant,autorisationCode);
+            VoteMessage voteMessage = new VoteMessage(vote.getCampagneIdentifiant(), vote.getObjetIdentifiant(), vote.getAutorisationCode());
             jmsProducteur.sendVote(voteMessage);
-            return SendVoteResult.ok(campagneIdentifiant,autorisationCode,"Vote successfully submited");
+            return SendVoteResult.ok(vote.getCampagneIdentifiant(),vote.getAutorisationCode(),"Vote successfully submited");
 
         }else{
-            return SendVoteResult.ko(campagneIdentifiant,autorisationCode,"No votant found with campagneIdentifiant and autorisationCode provided");
+            return SendVoteResult.ko(vote.getCampagneIdentifiant(),vote.getAutorisationCode(),"No votant found with campagneIdentifiant and autorisationCode provided");
         }
 
+
+    }
+
+    @Override
+    public Optional<Demande> getDemandeByIdentifiant(String identifiant) {
+
+        Optional<DemandeEntity> demandeEntity = demandeRepository.findByIdentifiant(identifiant);
+
+        return demandeEntity.map(Demande::fromEntity);
+    }
+
+    @Override
+    public List<Demande> findAllDemandes(Optional<DemandeStatus> demandeStatus) {
+        List<Demande> demandes = new ArrayList<>();
+
+        if(demandeStatus.isPresent()){
+
+            demandeRepository.findByStatus(demandeStatus.get()).iterator().forEachRemaining(campagneEntity -> {
+                demandes.add(Demande.mapFromEntity(campagneEntity));
+            });
+
+        }else{
+
+            demandeRepository.findAll().iterator().forEachRemaining(demandeEntity -> {
+                demandes.add(Demande.mapFromEntity(demandeEntity));
+            });
+        }
+
+        return demandes;
 
     }
 

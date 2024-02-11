@@ -1,11 +1,12 @@
 package ch.hearc.adminservice.service;
 
-import ch.hearc.adminservice.shared.CampagneStatus;
 import ch.hearc.adminservice.service.models.Campagne;
 import ch.hearc.adminservice.service.models.Objet;
+import ch.hearc.adminservice.service.models.UpdateCampagneStatusAction;
 import ch.hearc.adminservice.service.models.actions.CreateObjetForCampagneResult;
+import ch.hearc.adminservice.service.models.actions.GetCampagneResultsAction;
 import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusResult;
-import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusAction;
+import ch.hearc.adminservice.shared.CampagneStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,6 @@ public interface CampagneService {
     Optional<Objet> getObjetByIdentifiant(String idObjet);
 
     UpdateCampagneStatusResult updateCampganeStatus(Campagne campagne, UpdateCampagneStatusAction action);
+
+    GetCampagneResultsAction getResultForCampagne(String campagneIdentifiant);
 }

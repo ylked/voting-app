@@ -1,5 +1,6 @@
 package ch.hearc.votingservice.repository.models;
 
+import ch.hearc.votingservice.shared.DemandeStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,24 +19,28 @@ public class DemandeEntity {
 
     private String campagneId;
 
-    private Boolean isOnError = Boolean.FALSE;
+    @Enumerated(EnumType.STRING)
+    private DemandeStatus status;
 
-    public Boolean getOnError() {
-        return isOnError;
-    }
 
-    public void setOnError(Boolean onError) {
-        isOnError = onError;
-    }
 
     public DemandeEntity() {
     }
 
-    public DemandeEntity(String nom, String identifiant, String prenom, String campagneId) {
+    public DemandeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DemandeStatus status) {
+        this.status = status;
+    }
+
+    public DemandeEntity(String nom, String identifiant, String prenom, String campagneId, DemandeStatus status) {
         this.nom = nom;
         this.identifiant = identifiant;
         this.prenom = prenom;
         this.campagneId = campagneId;
+        this.status = status;
     }
 
     public String getNom() {

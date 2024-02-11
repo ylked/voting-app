@@ -2,6 +2,8 @@ package ch.hearc.adminservice.repository.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "objet")
 public class ObjetEntity {
@@ -14,9 +16,21 @@ public class ObjetEntity {
 
     private String identifiant;
 
-    @ManyToOne
+    public List<VoteEntity> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<VoteEntity> votes) {
+        this.votes = votes;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campagne_id")
     private CampagneEntity campagneEntity;
+
+    @OneToMany(mappedBy = "objetEntity",fetch = FetchType.LAZY)
+    private List<VoteEntity> votes;
+
 
     public ObjetEntity(String nom, String identifiant) {
         this.nom = nom;

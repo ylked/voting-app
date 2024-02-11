@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.JMSException;
 import jakarta.jms.TextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -18,13 +20,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class JmsMessageListenerImpl implements JmsMessageListener {
 
+    Logger logger = LoggerFactory.getLogger(JmsMessageListenerImpl.class);
+
     @Autowired
     AutorisationJmsDeserializerMapper mapper;
 
     @Autowired
     AutorisationService autorisationService;
 
-    @JmsListener(destination = "denied-autorisation")
+    @JmsListener(destination = "${spring.activemq.demande.denied.queue}")
     @Override
     public void listenRefusDemande(TextMessage jsonMessage) throws JMSException, JsonProcessingException {
 
@@ -38,24 +42,28 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
      * @throws JMSException
      * @throws JsonProcessingException
      */
-    @JmsListener(destination = "send-autorisation")
+    @JmsListener(destination = "${spring.activemq.demande.accepted.queue}")
     @Override
     public void listenAutorisation(TextMessage jsonMessage) throws JMSException, JsonProcessingException {
 
+        logger.info("ListenAutorisation jms listener triggered");
         String messageData = null;
 
-        System.out.println("Message received from queue: send-autorisation");
 
         if(jsonMessage != null) {
             messageData = jsonMessage.getText();
 
-            System.out.println("Message received from queue: send-autorisation, message: " + messageData);
+            logger.info("Listen autorisations message received from queue:");
+            logger.info(messageData);
+
             //Conversion en autorisation
             try{
                 AutorisationDto autorisationDto = mapper.mapFromJson(messageData);
                 Autorisation autorisation = AutorisationDto.toAutorisation(autorisationDto);
                 ValidateAutorisationResult result = autorisationService.validateAutorisation(autorisation);
 
+
+                logger.info("Autorisation process done, result: " + result.getMessage());
             }catch (JsonDeserialisationException e){
                 e.printStackTrace();
             }
