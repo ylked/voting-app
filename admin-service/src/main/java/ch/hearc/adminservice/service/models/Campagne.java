@@ -3,7 +3,6 @@ package ch.hearc.adminservice.service.models;
 import ch.hearc.adminservice.repository.entity.CampagneEntity;
 import ch.hearc.adminservice.shared.CampagneStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,13 +38,16 @@ public class Campagne {
      * @return l'entité métier
      */
     public static Campagne mapFromEntity(CampagneEntity campagneEntity){
-        //mapping des objets liés
-        List<Objet> objets = campagneEntity.getObjets().stream().map(Objet::mapFromEntity).toList();
-
         return new Campagne(
-                campagneEntity.getNom(), campagneEntity.getIdentifiant(), campagneEntity.getStatus(),objets);
-
+                campagneEntity.getNom(),
+                campagneEntity.getIdentifiant(),
+                campagneEntity.getStatus(),
+                campagneEntity.getObjets().stream().map(
+                        Objet::mapFromEntityWithVotes)
+                    .toList());
     }
+
+
     private Campagne(String nom){
         this.nom = nom;
         this.status = CampagneStatus.CREATED;
@@ -63,8 +65,9 @@ public class Campagne {
         this.objets = objets;
     }
 
-    public static CampagneEntity mapToEntity(Campagne campagne){
-        return new CampagneEntity(campagne.getIdentifiant(), campagne.getNom(), campagne.getStatus());
+    public CampagneEntity mapToEntity(){
+        return new CampagneEntity(
+                this.identifiant, this.nom, this.status);
     }
 
 

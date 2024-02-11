@@ -2,14 +2,14 @@ package ch.hearc.votingservice.jms.models;
 
 public class VoteMessage {
 
-    private String camoagneIdentifiant;
+    private String campagneIdentifiant;
 
     private String objetIdentifiant;
 
     private String autorisationCode;
 
-    public VoteMessage(String camoagneIdentifiant, String objetIdentifiant, String autorisationCode) {
-        this.camoagneIdentifiant = camoagneIdentifiant;
+    public VoteMessage(String campagneIdentifiant, String objetIdentifiant, String autorisationCode) {
+        this.campagneIdentifiant = campagneIdentifiant;
         this.objetIdentifiant = objetIdentifiant;
         this.autorisationCode = autorisationCode;
     }
@@ -17,12 +17,12 @@ public class VoteMessage {
     public VoteMessage() {
     }
 
-    public String getCamoagneIdentifiant() {
-        return camoagneIdentifiant;
+    public String getCampagneIdentifiant() {
+        return campagneIdentifiant;
     }
 
-    public void setCamoagneIdentifiant(String camoagneIdentifiant) {
-        this.camoagneIdentifiant = camoagneIdentifiant;
+    public void setCampagneIdentifiant(String campagneIdentifiant) {
+        this.campagneIdentifiant = campagneIdentifiant;
     }
 
     public String getObjetIdentifiant() {

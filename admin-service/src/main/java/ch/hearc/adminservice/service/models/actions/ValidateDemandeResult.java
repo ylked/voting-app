@@ -2,7 +2,6 @@ package ch.hearc.adminservice.service.models.actions;
 
 import ch.hearc.adminservice.service.models.Autorisation;
 import ch.hearc.adminservice.service.models.Demande;
-import ch.hearc.adminservice.service.models.Objet;
 
 public class ValidateDemandeResult {
 

@@ -64,13 +64,14 @@ public class Campagne {
 
     public static Campagne fromCampagneResponsBody(CampagneResponseBody campagneResponseBody){
 
-        return new Campagne(
+        Campagne c =  new Campagne(
                 campagneResponseBody.getNom(),
                 campagneResponseBody.getIdentifiant(),
-                campagneResponseBody.getStatus()
-                //campagneResponseBody.getObjets().stream().map(objetResponseBody -> {
-                //    return new Objet(campagneResponseBody.getNom(), campagneResponseBody.getIdentifiant());
-                //}).toList()
+                campagneResponseBody.getStatus(),
+                campagneResponseBody.getObjets().stream().map(objet ->
+                        new Objet(objet.getNom(), objet.getIdentifiant())).toList()
         );
+
+        return c;
     }
 }

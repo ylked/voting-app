@@ -1,18 +1,21 @@
 package ch.hearc.adminservice.api.web.models.response;
 
-public class ObjetCreatedResponseBody {
+public class CampagneCreatedResponseBody {
 
-    private String message = "Objet [%s] successfully added to campagne [%s]";
+    private String message = "Campagne successfully created";
 
     private String campagneIdentifiant;
 
-    private String objetIdentifiant;
 
-    public ObjetCreatedResponseBody(String campagneIdentifiant, String objetIdentifiant){
-        this.message = String.format(this.message, campagneIdentifiant, objetIdentifiant);
+    public CampagneCreatedResponseBody(String campagneIdentifiant){
+        this.campagneIdentifiant = campagneIdentifiant;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public String getCampagneIdentifiant() {
+        return campagneIdentifiant;
     }
 }

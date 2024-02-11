@@ -3,14 +3,15 @@ package ch.hearc.adminservice.service.impl;
 import ch.hearc.adminservice.repository.CampagneRespository;
 import ch.hearc.adminservice.repository.ObjetRepository;
 import ch.hearc.adminservice.repository.entity.CampagneEntity;
-import ch.hearc.adminservice.shared.CampagneStatus;
 import ch.hearc.adminservice.repository.entity.ObjetEntity;
 import ch.hearc.adminservice.service.CampagneService;
 import ch.hearc.adminservice.service.models.Campagne;
 import ch.hearc.adminservice.service.models.Objet;
+import ch.hearc.adminservice.service.models.UpdateCampagneStatusAction;
 import ch.hearc.adminservice.service.models.actions.CreateObjetForCampagneResult;
+import ch.hearc.adminservice.service.models.actions.GetCampagneResultsAction;
 import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusResult;
-import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusAction;
+import ch.hearc.adminservice.shared.CampagneStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,8 @@ public class CampagneServiceImpl implements CampagneService {
 
         //conversions objet metiers vers entity pour persistence
         Campagne campagne = Campagne.nouvelleCampagne(nom);
-        CampagneEntity campagneEntity = Campagne.mapToEntity(campagne);
+
+        CampagneEntity campagneEntity = campagne.mapToEntity();
 
         campagneEntity = campagneRespository.save(campagneEntity);
 
@@ -67,11 +69,7 @@ public class CampagneServiceImpl implements CampagneService {
         Optional<CampagneEntity> optionnalEntity = campagneRespository.findByIdentifiant(identifiant);
 
         if(optionnalEntity.isPresent()){
-            CampagneEntity campagneEntity = optionnalEntity.get();
-            Campagne campagne = Campagne.mapFromEntity(campagneEntity);
-            //Liste des objets
-            List<Objet> objets = campagneEntity.getObjets().stream().map(Objet::mapFromEntity).toList();
-            campagne.setObjets(objets);
+            Campagne campagne = Campagne.mapFromEntity(optionnalEntity.get());
             return Optional.of(campagne);
         }else{
             return Optional.empty();
@@ -113,21 +111,21 @@ public class CampagneServiceImpl implements CampagneService {
 
         CampagneEntity campagneEntity = campagneRespository.findByIdentifiant(campagne.getIdentifiant()).get();
 
-
+        //TODO check campagnePresence
         switch (action){
             case OPEN -> {
                 if(campagneEntity.getStatus().equals(CampagneStatus.CREATED)){
 
                     //une campagne a ouvrir doit avoir au minimum 2 objets
                     if (campagneEntity.getObjets().size() < 2){
-                        return UpdateCampagneStatusResult.actionKo(Campagne.mapFromEntity(campagneEntity),"The campagne muss have at least 2 objets to be OPENED");
+                        return UpdateCampagneStatusResult.actionKo(campagneEntity.getIdentifiant(),"The campagne muss have at least 2 objets to be OPENED");
                     }
 
                     campagneEntity.setStatus(CampagneStatus.OPENED);
                     campagneEntity = campagneRespository.save(campagneEntity);
-                    return UpdateCampagneStatusResult.actionOk(Campagne.mapFromEntity(campagneEntity));
+                    return UpdateCampagneStatusResult.actionOk(campagneEntity.getIdentifiant(),"Campagne successfully updates to status OPENED");
                 }else{
-                    return UpdateCampagneStatusResult.actionKo(Campagne.mapFromEntity(campagneEntity),"The campagne muss be in the status CREATED to be OPENED");
+                    return UpdateCampagneStatusResult.actionKo(campagneEntity.getIdentifiant(),"The campagne muss be in the status CREATED to be OPENED");
                 }
             }
 
@@ -135,13 +133,37 @@ public class CampagneServiceImpl implements CampagneService {
                 if(campagneEntity.getStatus().equals(CampagneStatus.OPENED)){
                     campagneEntity.setStatus(CampagneStatus.CLOSED);
                     campagneEntity = campagneRespository.save(campagneEntity);
-                    return UpdateCampagneStatusResult.actionOk(Campagne.mapFromEntity(campagneEntity));
+                    return UpdateCampagneStatusResult.actionOk(campagneEntity.getIdentifiant(), "Campagne successfully updates to status CLOSED");
                 }else{
-                    return UpdateCampagneStatusResult.actionKo(Campagne.mapFromEntity(campagneEntity),"The campagne muss be in the status OPENED to be CLOSED");
+                    return UpdateCampagneStatusResult.actionKo(campagneEntity.getIdentifiant(),"The campagne muss be in the status OPENED to be CLOSED");
                 }
             }
 
             default -> throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public GetCampagneResultsAction getResultForCampagne(String campagneIdentifiant) {
+
+        Optional<CampagneEntity> optionalCampagneEntity = campagneRespository.findByIdentifiant(campagneIdentifiant);
+        //check si existe
+        if(optionalCampagneEntity.isPresent()){
+
+            //check si ouverte ou closes
+            CampagneEntity campagneEntity = optionalCampagneEntity.get();
+
+            if(campagneEntity.getStatus().equals(CampagneStatus.CLOSED) ||
+                    campagneEntity.getStatus().equals(CampagneStatus.OPENED)){
+
+                Campagne campagne = Campagne.mapFromEntity(campagneEntity);
+
+                return GetCampagneResultsAction.ok(campagne);
+            }else{
+                return GetCampagneResultsAction.campagneInStatusCreated(campagneIdentifiant);
+            }
+        }else{
+            return GetCampagneResultsAction.campagneNotExist(campagneIdentifiant);
         }
     }
 }

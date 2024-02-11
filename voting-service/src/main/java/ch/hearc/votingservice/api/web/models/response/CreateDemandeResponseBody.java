@@ -2,19 +2,30 @@ package ch.hearc.votingservice.api.web.models.response;
 
 public class CreateDemandeResponseBody {
 
-    private String messgae;
+    private String message;
 
-    public CreateDemandeResponseBody(String messgae) {
-        this.messgae = messgae;
+    private String campagneIdentifiant;
+
+    private String demandeIdentifiant;
+
+    public CreateDemandeResponseBody(String message, String campagneIdentifiant, String demandeIdentifiant) {
+        this.message = message;
+        this.demandeIdentifiant = demandeIdentifiant;
+        this.campagneIdentifiant = campagneIdentifiant;
     }
 
 
-
-    public String getMessgae() {
-        return messgae;
+    public String getCampagneIdentifiant() {
+        return campagneIdentifiant;
     }
 
-    public void setMessgae(String messgae) {
-        this.messgae = messgae;
+    public String getDemandeIdentifiant() {
+        return demandeIdentifiant;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+
 }

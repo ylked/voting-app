@@ -1,0 +1,2643 @@
+{
+	"info": {
+		"_postman_id": "9b75071c-14ba-456e-8b19-d82778d3bc0e",
+		"name": "VotingApplication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "2264347"
+	},
+	"item": [
+		{
+			"name": "scenarios",
+			"item": [
+				{
+					"name": "campagne-scenarios",
+					"item": [
+						{
+							"name": "Create Campagne",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    }",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
+											"",
+											"pm.collectionVariables.set(\"campagneId\", pm.response.json().campagneIdentifiant);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"Test scenarios campagne\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Campagne",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'campagnes': {",
+											"            'type': 'array',",
+											"            'items': [{",
+											"                    'type': 'object',",
+											"                    'properties': {",
+											"                        'nom': { 'type': 'string' },",
+											"                        'status': { 'type': 'string' },",
+											"                        'identifiants': { 'type': 'string' },",
+											"                        'objets': { 'type': 'array' }",
+											"                    }",
+											"                }]",
+											"        }",
+											"    },",
+											"    required:[",
+											"        'campagnes'",
+											"    ]",
+											"};",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test(\"CampagneId is present in the collection\", function () {",
+											"    ",
+											"    console.log(pm.collectionVariables.get(\"campagneId\"))",
+											"",
+											"    jsonResponse = pm.response.json();",
+											"    let campagnesSize = jsonResponse.campagnes.length;",
+											"",
+											"    pm.expect(campagnesSize).to.be.greaterThan(0);",
+											"    var present = false;",
+											"",
+											"    for (let i = 0; i < campagnesSize; i++) {",
+											"        let capmagneId = jsonResponse.campagnes[i].identifiant;",
+											"",
+											"        if (capmagneId === pm.collectionVariables.get(\"campagneId\")) {",
+											"            present = true;",
+											"        } ",
+											"    }",
+											"",
+											"    pm.expect(present).to.be.true;",
+											"});",
+											"",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Campagne Detail",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\");",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'nom': {",
+											"            'type': 'string'",
+											"        },",
+											"        'status': {",
+											"            'type': 'string'",
+											"        },",
+											"        'identifiant': {",
+											"            'type': 'string'",
+											"        },",
+											"        'objets': {",
+											"            'type': 'array'",
+											"        }",
+											"        ",
+											"    }",
+											"};",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check campagne values', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    let campagneStatus = jsonResponse.status;",
+											"    pm.expect(campagneStatus).to.be.equals('CREATED');",
+											"",
+											"    let identifiant = jsonResponse.identifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"    let objets = jsonResponse.objets;",
+											"    pm.expect(objets.length).to.be.equal(0);",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Objet for Campagne",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/objet';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        },",
+											"        \"objetIdentifiant\": {",
+											"             \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\",",
+											"        \"objetIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"pm.test('Check campagne', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    ",
+											"    let identifiant = jsonResponse.campagneIdentifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"",
+											"",
+											"});",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\" : \"Test objet 1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"objet"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9fc84366-bd3c-420c-945d-4d57dfc75a67"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Open Campagne With Less than 2 Objets",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '?action=OPEN';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"UnSuccessful PUT request\", function () {",
+											"    pm.response.to.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(400);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":campagneId"
+									],
+									"variable": [
+										{
+											"key": "campagneId",
+											"value": "79363502-c1e5-46e2-b6c6-d308d4ee2879"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Second Objet for Campagne",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/objet';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        },",
+											"        \"objetIdentifiant\": {",
+											"             \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\",",
+											"        \"objetIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\" : \"Test objet 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"objet"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9fc84366-bd3c-420c-945d-4d57dfc75a67"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ensure results not avalaible",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/results';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'id': {",
+											"            'type': 'string'",
+											"        },",
+											"        'message': {",
+											"            'type': 'string'",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"id\",",
+											"        \"message\"",
+											"    ]",
+											"};",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(400);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check campagne values', function () {",
+											"    jsonResponse = pm.response.json();",
+											" ",
+											"    let identifiant = jsonResponse.id;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"results"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2cc6a2f4-22a6-4ca8-a562-01685ff1c93f"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Open Campagne With 2 Objets",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '?action=OPEN';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"UnSuccessful PUT request\", function () {",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":campagneId"
+									],
+									"variable": [
+										{
+											"key": "campagneId",
+											"value": "79363502-c1e5-46e2-b6c6-d308d4ee2879"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ensure Campagne is in status OPENED",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get('campagneId');",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'nom': { 'type': 'string' },",
+											"        'status': { 'type': 'string' },",
+											"        'identifiant': { 'type': 'string' },",
+											"        'objets': { 'type': 'array' }",
+											"    }",
+											"};",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test(\"Ensure campagne is OPENED\", function () {",
+											"    jsonResponse = pm.response.json();",
+											"    let campagneStatus = jsonResponse.status;",
+											"    pm.expect(campagneStatus).to.be.equals('OPENED');",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ensure results are avalaible",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/results';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'campagne': {",
+											"            'type': 'object',",
+											"            'properties':{",
+											"                'identifiant':{",
+											"                    'type':'string'",
+											"                },",
+											"                'nom':{",
+											"                    'type':'string'",
+											"                },",
+											"                'totalVotes':{",
+											"                    'type':'number'",
+											"                },",
+											"                'status':{",
+											"                    'type':'string'",
+											"                }",
+											"",
+											"            }",
+											"        },",
+											"        ",
+											"    },",
+											"    \"required\":[",
+											"        \"campagne\"",
+											"    ]",
+											"};",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.be.not.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check campagne values', function () {",
+											"    jsonResponse = pm.response.json();",
+											" ",
+											"    let identifiant = jsonResponse.campagne.identifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"});",
+											"",
+											"pm.test('Check results values', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    let campagneStatus = jsonResponse.campagne.status;",
+											"    pm.expect(campagneStatus).to.be.equals('OPENED');",
+											"",
+											"    let identifiant = jsonResponse.campagne.identifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"    let votes = jsonResponse.campagne.totalVotes;",
+											"    pm.expect(votes).to.be.equal(0);",
+											"",
+											"    let objets = jsonResponse.objets;",
+											"    pm.expect(objets.length).to.be.equal(2);",
+											"",
+											"});",
+											"",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"results"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2cc6a2f4-22a6-4ca8-a562-01685ff1c93f"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Close Campagne",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '?action=CLOSE';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"UnSuccessful PUT request\", function () {",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":campagneId"
+									],
+									"variable": [
+										{
+											"key": "campagneId",
+											"value": "79363502-c1e5-46e2-b6c6-d308d4ee2879"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Ensure Campagne is in status CLOSED",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get('campagneId');",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'nom': { 'type': 'string' },",
+											"        'status': { 'type': 'string' },",
+											"        'identifiant': { 'type': 'string' },",
+											"        'objets': { 'type': 'array' }",
+											"    }",
+											"};",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test(\"Ensure campagne is OPENED\", function () {",
+											"    jsonResponse = pm.response.json();",
+											"    let campagneStatus = jsonResponse.status;",
+											"    pm.expect(campagneStatus).to.be.equals('CLOSED');",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "autorisation-scenarios",
+					"item": [
+						{
+							"name": "Ensure demande cannot be created in status CLOSED",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"campagneId = pm.collectionVariables.get('campagneId');",
+											"",
+											"let body = {",
+											"    mode: 'raw',",
+											"    raw: JSON.stringify({",
+											"        nom: 'Mickey',",
+											"        prenom: 'Mouse',",
+											"        campagneId:campagneId",
+											"    }),",
+											"    options: {",
+											"        raw: {",
+											"            language: 'json'",
+											"        }",
+											"    }",
+											"}",
+											"pm.request.body = body"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'demande': {",
+											"            'type': 'object',",
+											"            'properties':{",
+											"                'nom':{",
+											"                    'type':'string'",
+											"                },",
+											"                'identifiant':{",
+											"                    'type':'string'",
+											"                },",
+											"                'prenom':{",
+											"                    'type':'string'",
+											"                },",
+											"                'campagneId':{",
+											"                    'type':'string'",
+											"                },",
+											"                'status':{",
+											"                    'type':'string'",
+											"                }",
+											"",
+											"            }",
+											"        },",
+											"        'message':{",
+											"            'type':'string'",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"demande\"",
+											"    ]",
+											"};",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(400);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check demande values', function () {",
+											"    jsonResponse = pm.response.json();",
+											" ",
+											"    let campagneIdentifiant = jsonResponse.demande.campagneId;",
+											"    pm.expect(campagneIdentifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"Mickex\",\n    \"prenom\":\"Mouse\",\n    \"campagneId\":\"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{voting-service-host}}:{{voting-service-port}}/demandes"
+							},
+							"response": []
+						},
+						{
+							"name": "Create New Campagne",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    }",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
+											"",
+											"pm.collectionVariables.set(\"campagneId\", pm.response.json().campagneIdentifiant);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"Test scenarios autorisation campagne\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Objet 1",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/objet';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        },",
+											"        \"objetIdentifiant\": {",
+											"             \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\",",
+											"        \"objetIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"pm.test('Check campagne', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    ",
+											"    let identifiant = jsonResponse.campagneIdentifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"",
+											"",
+											"});",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
+											"",
+											"pm.collectionVariables.set(\"objet1\", pm.response.json().objetIdentifiant);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\" : \"Test objet 1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"objet"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9fc84366-bd3c-420c-945d-4d57dfc75a67"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Objet 2",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '/objet';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        },",
+											"        \"objetIdentifiant\": {",
+											"             \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\",",
+											"        \"objetIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"pm.test('Check campagne', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    ",
+											"    let identifiant = jsonResponse.campagneIdentifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"",
+											"",
+											"});",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"    pm.response.to.have.header(\"Location\");",
+											"});",
+											"",
+											"pm.collectionVariables.set(\"objet2\", pm.response.json().objetIdentifiant);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\" : \"Test objet 2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"objet"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9fc84366-bd3c-420c-945d-4d57dfc75a67"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Open Campagne",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/campagne/' + pm.collectionVariables.get(\"campagneId\") + '?action=OPEN';"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    \"type\":\"object\",",
+											"    \"properties\":{",
+											"        \"message\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"campagneIdentifiant\":{",
+											"            \"type\":\"string\"",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"message\",",
+											"        \"campagneIdentifiant\"",
+											"    ]",
+											"}",
+											"",
+											"pm.test(\"UnSuccessful PUT request\", function () {",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"});",
+											"",
+											"pm.test(\"Validate response schema\", function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"});",
+											"",
+											"",
+											"pm.test(\"Headers key check\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":campagneId"
+									],
+									"variable": [
+										{
+											"key": "campagneId",
+											"value": "79363502-c1e5-46e2-b6c6-d308d4ee2879"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Demande for Campagne",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"campagneId = pm.collectionVariables.get('campagneId');",
+											"",
+											"let body = {",
+											"    mode: 'raw',",
+											"    raw: JSON.stringify({",
+											"        nom: 'Mickey',",
+											"        prenom: 'Mouse',",
+											"        campagneId:campagneId",
+											"    }),",
+											"    options: {",
+											"        raw: {",
+											"            language: 'json'",
+											"        }",
+											"    }",
+											"}",
+											"pm.request.body = body"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'demande': {",
+											"            'type': 'object',",
+											"            'properties':{",
+											"                'message':{",
+											"                    'type':'string'",
+											"                },",
+											"                'demandeIdentifiant':{",
+											"                    'type':'string'",
+											"                },",
+											"                'campagneIdentifiant':{",
+											"                    'type':'string'",
+											"                }",
+											"",
+											"            }",
+											"        }",
+											"    },",
+											"    \"required\":[",
+											"        \"demandeIdentifiant\",",
+											"        \"campagneIdentifiant\",",
+											"        \"message\"",
+											"    ]",
+											"};",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.be.not.error;",
+											"    pm.expect(pm.response.code).to.be.equal(201);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check demande values', function () {",
+											"    jsonResponse = pm.response.json();",
+											" ",
+											"    let campagneIdentifiant = jsonResponse.campagneIdentifiant;",
+											"    pm.expect(campagneIdentifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.response.to.have.header('Location');",
+											"})",
+											"",
+											"pm.collectionVariables.set('demandeId',jsonResponse.demandeIdentifiant);",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"Mickex\",\n    \"prenom\":\"Mouse\",\n    \"campagneId\":\"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{voting-service-host}}:{{voting-service-port}}/demandes"
+							},
+							"response": []
+						},
+						{
+							"name": "Demande is present in PENDING Status",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/demandes/' + pm.collectionVariables.get(\"demandeId\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'nom': {",
+											"            'type': 'string'",
+											"        },",
+											"        'status': {",
+											"            'type': 'string'",
+											"        },",
+											"        'identifiant': {",
+											"            'type': 'string'",
+											"        },",
+											"        'prenom': {",
+											"            'type': 'string'",
+											"        },",
+											"        'campagneId': {",
+											"            'type': 'string'",
+											"        }",
+											"    },",
+											"    'required':[",
+											"        'nom',",
+											"        'prenom',",
+											"        'campagneId',",
+											"        'identifiant',",
+											"        'status'",
+											"    ]",
+											"};",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check demande values', function () {",
+											"    jsonResponse = pm.response.json();",
+											"    ",
+											"    let demandeStatus = jsonResponse.status;",
+											"    pm.expect(demandeStatus).to.be.equals('PENDING');",
+											"",
+											"    let identifiant = jsonResponse.identifiant;",
+											"    pm.expect(identifiant).to.be.equals(pm.collectionVariables.get(\"demandeId\"),\"Demande identifiant doesn't match\");",
+											"",
+											"    let campagneIdentifiant = jsonResponse.campagneId;",
+											"    pm.expect(campagneIdentifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"),\"Campagne identifiant doesn't match\");",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{voting-service-host}}:{{voting-service-port}}/demandes/:id",
+									"host": [
+										"{{voting-service-host}}"
+									],
+									"port": "{{voting-service-port}}",
+									"path": [
+										"demandes",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8246ecd9-b6d2-401f-9685-64aba77e0eab"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Demande is present in admin-service before autorisation",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											"",
+											"pm.test('Successful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"",
+											"pm.test(\"CampagneId is present in the collection\", function () {",
+											"    ",
+											"    console.log(pm.collectionVariables.get(\"campagneId\"))",
+											"",
+											"    jsonResponse = pm.response.json();",
+											"    let demandeSize = jsonResponse.length;",
+											"",
+											"    pm.expect(demandeSize).to.be.greaterThan(0);",
+											"    var present = false;",
+											"",
+											"    for (let i = 0; i < demandeSize; i++) {",
+											"        let campagneId = jsonResponse[i].campagneId;",
+											"",
+											"        if (campagneId === pm.collectionVariables.get(\"campagneId\")) {",
+											"            present = true;",
+											"        } ",
+											"    }",
+											"",
+											"    pm.expect(present).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"DemandeId is present in the collection\", function () {",
+											"    ",
+											"    console.log(pm.collectionVariables.get(\"demandeId\"))",
+											"",
+											"    jsonResponse = pm.response.json();",
+											"    let demandeSize = jsonResponse.length;",
+											"",
+											"    pm.expect(demandeSize).to.be.greaterThan(0);",
+											"    var present = false;",
+											"",
+											"    for (let i = 0; i < demandeSize; i++) {",
+											"        let demandeId = jsonResponse[i].identifiant;",
+											"",
+											"        if (demandeId === pm.collectionVariables.get(\"demandeId\")) {",
+											"            present = true;",
+											"        } ",
+											"    }",
+											"",
+											"    pm.expect(present).to.be.true;",
+											"});",
+											"",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+							},
+							"response": []
+						},
+						{
+							"name": "Validate demande",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/autorisation/demandes/' + pm.collectionVariables.get(\"demandeId\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'message': {",
+											"            'type': 'string'",
+											"        },",
+											"        'autorisationCode':{",
+											"            'type':'string'",
+											"        },",
+											"        'campagneId':{",
+											"            'type':'string'",
+											"        },",
+											"    },",
+											"    \"required\":[",
+											"        \"autorisationCode\",",
+											"        \"campagneId\",",
+											"        \"message\"",
+											"    ]",
+											"};",
+											"",
+											"pm.test('Successful POST request', function () {",
+											"    pm.response.to.be.not.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"pm.test('Check demande values', function () {",
+											"    jsonResponse = pm.response.json();",
+											" ",
+											"    let campagneIdentifiant = jsonResponse.campagneId;",
+											"    pm.expect(campagneIdentifiant).to.be.equals(pm.collectionVariables.get(\"campagneId\"));",
+											"",
+											"});",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											"pm.collectionVariables.set('autorisationCode',jsonResponse.autorisationCode);",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"autorisation",
+										"demandes",
+										":demandeId"
+									],
+									"variable": [
+										{
+											"key": "demandeId",
+											"value": "dd670fb1-08e4-4950-bca1-8d7f715458ed"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Demande successfully deleted in voting-service",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"",
+											"pm.request.url.path = '/demandes/' + pm.collectionVariables.get(\"demandeId\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseSchema = {",
+											"    'type': 'object',",
+											"    'properties': {",
+											"        'message': {",
+											"            'type': 'string'",
+											"        }",
+											"    },",
+											"    'required':[",
+											"        'message'",
+											"        ",
+											"    ]",
+											"};",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(404);",
+											"})",
+											"",
+											"pm.test('Validate response schema', function () {",
+											"    pm.response.to.have.jsonSchema(responseSchema);",
+											"})",
+											"",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{voting-service-host}}:{{voting-service-port}}/demandes/:id",
+									"host": [
+										"{{voting-service-host}}"
+									],
+									"port": "{{voting-service-port}}",
+									"path": [
+										"demandes",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8246ecd9-b6d2-401f-9685-64aba77e0eab"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Demande successfully deleted in admin-service",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											"",
+											"pm.test('UnSuccessful GET request', function () {",
+											"    pm.response.to.not.be.error;",
+											"    pm.expect(pm.response.code).to.be.equal(200);",
+											"})",
+											"",
+											"",
+											"",
+											"",
+											"pm.test(\"DemandeId is absent in the collection\", function () {",
+											"    ",
+											"    console.log(pm.collectionVariables.get(\"demandeId\"))",
+											"",
+											"    jsonResponse = pm.response.json();",
+											"    let demandeSize = jsonResponse.length;",
+											"",
+											"    ",
+											"    var present = false;",
+											"",
+											"    for (let i = 0; i < demandeSize; i++) {",
+											"        let demandeId = jsonResponse[i].identifiant;",
+											"",
+											"        if (demandeId === pm.collectionVariables.get(\"demandeId\")) {",
+											"            present = true;",
+											"        } ",
+											"    }",
+											"",
+											"    pm.expect(present).to.be.false;",
+											"});",
+											"",
+											"",
+											"pm.test('Headers key check', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"})",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+							},
+							"response": []
+						},
+						{
+							"name": "send vote",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"campagneId = pm.collectionVariables.get('campagneId');",
+											"autorisationCode = pm.collectionVariables.get('autorisationCode');",
+											"objetIdentifiant = pm.collectionVariables.get('objet1');",
+											"",
+											"let body = {",
+											"    mode: 'raw',",
+											"    raw: JSON.stringify({",
+											"        campagneIdentifiant: campagneId,",
+											"        objetIdentifiant: objetIdentifiant,",
+											"        autorisationCode: autorisationCode",
+											"    }),",
+											"    options: {",
+											"        raw: {",
+											"            language: 'json'",
+											"        }",
+											"    }",
+											"}",
+											"pm.request.body = body"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"campagneIdentifiant\":\"\",\n    \"objetIdentifiant\":\"\",\n    \"autorisationCode\":\"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{voting-service-host}}:{{voting-service-port}}/campagne/vote"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "admin-service",
+			"item": [
+				{
+					"name": "/campagne",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+					},
+					"response": [
+						{
+							"name": "/campagne",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"elections fédérales\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+					},
+					"response": []
+				},
+				{
+					"name": "/campagne?status=:status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne?status=CREATED",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "CREATED"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/campagne?status=:status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne?status=CREATED",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "CREATED"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/:id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne/:id",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne",
+								"campagne",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "fdsfd"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/campagne/:id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne/:id",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										"campagne",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "fdsfd"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/:id/results",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne",
+								":id",
+								"results"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2cc6a2f4-22a6-4ca8-a562-01685ff1c93f"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/campagne/:id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"results"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "7e10a71e-b9a5-40d2-9a3f-257d4a8cac3c"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/:id/objet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\" : \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne",
+								":id",
+								"objet"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "9fc84366-bd3c-420c-945d-4d57dfc75a67"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/campagne/:id/objet",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\" : \"Elisabeth Baume Schneider\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"campagne",
+										":id",
+										"objet"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5ae42d41-13be-46ab-9564-d7887a7f740f"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/:campagneId?action=:action",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId?action=OPEN",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne",
+								":campagneId"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "OPEN"
+								}
+							],
+							"variable": [
+								{
+									"key": "campagneId",
+									"value": "79363502-c1e5-46e2-b6c6-d308d4ee2879"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/campagne/79363502-c1e5-46e2-b6c6-d308d4ee2879?action=OPEN",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/:campagneId?action=OPEN",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										":campagneId"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "OPEN"
+										}
+									],
+									"variable": [
+										{
+											"key": "campagneId",
+											"value": ""
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/autorisation/demandes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+					},
+					"response": []
+				},
+				{
+					"name": "/autorisation/demandes/5ca99444-a929-40fa-baf6-06f33962a24d",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"autorisation",
+								"demandes",
+								":demandeId"
+							],
+							"variable": [
+								{
+									"key": "demandeId",
+									"value": "dd670fb1-08e4-4950-bca1-8d7f715458ed"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "/autorisation/demandes/5ca99444-a929-40fa-baf6-06f33962a24d",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+									"host": [
+										"{{admin-service-host}}"
+									],
+									"port": "{{admin-sercice-port}}",
+									"path": [
+										"autorisation",
+										"demandes",
+										":demandeId"
+									],
+									"variable": [
+										{
+											"key": "demandeId",
+											"value": "dd670fb1-08e4-4950-bca1-8d7f715458ed"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/:id/objet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\" : \"Elisabeth Baume Schneider3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+							"host": [
+								"{{admin-service-host}}"
+							],
+							"port": "{{admin-sercice-port}}",
+							"path": [
+								"campagne",
+								":id",
+								"objet"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "49ad425b-f571-4f81-8e3b-3c362b9081ca"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/autorisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "voting-service",
+			"item": [
+				{
+					"name": "/campagnes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{voting-service-host}}:{{voting-service-port}}/campagnes"
+					},
+					"response": []
+				},
+				{
+					"name": "/demandes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\":\"\",\n    \"prenom\":\"\",\n    \"campagneId\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{voting-service-host}}:{{voting-service-port}}/demandes"
+					},
+					"response": [
+						{
+							"name": "/demandes",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nom\":\"Ducky\",\n    \"prenom\":\"Donald\",\n    \"campagneId\":\"d9efdda8-367b-4ca3-b8b7-bfc2bbd5bf66\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{voting-service-host}}:{{voting-service-port}}/demandes"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/campagne/vote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"campagneIdentifiant\":\"\",\n    \"objetIdentifiant\":\"\",\n    \"autorisationCode\":\"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{voting-service-host}}:{{voting-service-port}}/campagne/vote"
+					},
+					"response": [
+						{
+							"name": "/campagne/vote",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"campagneIdentifiant\":\"\",\n    \"objetIdentifiant\":\"\",\n    \"autorisationCode\":\"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{voting-service-host}}:{{voting-service-port}}/campagne/vote"
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "/demandes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{voting-service-host}}:{{voting-service-port}}/demandes"
+					},
+					"response": []
+				},
+				{
+					"name": "/demandes/:id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{voting-service-host}}:{{voting-service-port}}/demandes/:id",
+							"host": [
+								"{{voting-service-host}}"
+							],
+							"port": "{{voting-service-port}}",
+							"path": [
+								"demandes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8246ecd9-b6d2-401f-9685-64aba77e0eab"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "campagneId",
+			"value": ""
+		},
+		{
+			"key": "demandeId",
+			"value": ""
+		},
+		{
+			"key": "autorisationCode",
+			"value": ""
+		},
+		{
+			"key": "objet1",
+			"value": ""
+		},
+		{
+			"key": "objet2",
+			"value": ""
+		}
+	]
+}

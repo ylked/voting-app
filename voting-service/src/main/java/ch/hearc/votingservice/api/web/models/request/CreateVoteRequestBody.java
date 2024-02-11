@@ -1,5 +1,6 @@
 package ch.hearc.votingservice.api.web.models.request;
 
+import ch.hearc.votingservice.service.models.Vote;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -22,17 +23,19 @@ public class CreateVoteRequestBody {
     private String objetIdentifiant;
 
 
-    public CreateVoteRequestBody() {
+    public static Vote toVote(CreateVoteRequestBody createVoteRequestBody) {
+
+        return Vote.newInstance(createVoteRequestBody.getCampagneIdentifiant(),
+                createVoteRequestBody.getAutorisationCode(),
+                createVoteRequestBody.getObjetIdentifiant());
     }
 
     public String getObjetIdentifiant() {
         return objetIdentifiant;
     }
 
-    public void setObjetIdentifiant(String objetIdentifiant) {
-        this.objetIdentifiant = objetIdentifiant;
-    }
 
+    public CreateVoteRequestBody(){}
     public CreateVoteRequestBody(String campagneIdentifiant, String autorisationCode, String objetIdentifiant) {
         this.campagneIdentifiant = campagneIdentifiant;
         this.autorisationCode = autorisationCode;
@@ -41,10 +44,6 @@ public class CreateVoteRequestBody {
 
     public String getCampagneIdentifiant() {
         return campagneIdentifiant;
-    }
-
-    public void setCampagneIdentifiant(String campagneIdentifiant) {
-        this.campagneIdentifiant = campagneIdentifiant;
     }
 
     public String getAutorisationCode() {

@@ -1,6 +1,7 @@
 package ch.hearc.votingservice.service.models.actions;
 
 import ch.hearc.votingservice.service.models.Demande;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class CreateDemandeAutorisationResult {
 
@@ -18,6 +19,7 @@ public class CreateDemandeAutorisationResult {
         return result;
     }
 
+    //TODO drop identifiant for ko autorisation
     public static CreateDemandeAutorisationResult actionKo(Demande demande, String message) {
         CreateDemandeAutorisationResult result = new CreateDemandeAutorisationResult();
         result.isSuccess = Boolean.FALSE;
@@ -30,6 +32,8 @@ public class CreateDemandeAutorisationResult {
         return demande;
     }
 
+
+    @JsonIgnore
     public Boolean isActionOk(){
         return this.isSuccess;
     }

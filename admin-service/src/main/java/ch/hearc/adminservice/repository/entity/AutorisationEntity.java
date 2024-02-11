@@ -33,6 +33,16 @@ public class AutorisationEntity {
     public AutorisationEntity() {
     }
 
+    private String identifiant;
+
+    public String getIdentifiant() {
+        return identifiant;
+    }
+
+    public void setIdentifiant(String identifiant) {
+        this.identifiant = identifiant;
+    }
+
     private String autorisationCode;
     private Boolean used = Boolean.FALSE;
 

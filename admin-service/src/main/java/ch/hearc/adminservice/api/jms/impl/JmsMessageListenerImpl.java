@@ -2,14 +2,22 @@ package ch.hearc.adminservice.api.jms.impl;
 
 
 import ch.hearc.adminservice.api.jms.JmsMessageListener;
-//import ch.hearc.adminservice.service.AutorisationService;
+import ch.hearc.adminservice.api.jms.deserializer.DemandeJmsDeserializerMapper;
+import ch.hearc.adminservice.api.jms.deserializer.JsonDeserialisationException;
+import ch.hearc.adminservice.api.jms.deserializer.VoteJmsDeserializerMapper;
+import ch.hearc.adminservice.api.jms.models.DemandeReceivedMessage;
+import ch.hearc.adminservice.api.jms.models.SoumissionVoteMessage;
 import ch.hearc.adminservice.service.AutorisationService;
+import ch.hearc.adminservice.service.VoteService;
 import ch.hearc.adminservice.service.models.Demande;
+import ch.hearc.adminservice.service.models.Vote;
 import ch.hearc.adminservice.service.models.actions.ReceptionnerDemandeResult;
+import ch.hearc.adminservice.service.models.actions.VoteSubmitedResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.JMSException;
 import jakarta.jms.TextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -21,7 +29,13 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
     @Autowired
     AutorisationService autorisationService;
     @Autowired
-    ObjectMapper mapper;
+    VoteService voteService;
+    @Autowired
+    DemandeJmsDeserializerMapper demandeMapper;
+    @Autowired
+    VoteJmsDeserializerMapper voteMapper;
+
+    Logger logger = LoggerFactory.getLogger(JmsMessageListenerImpl.class);
 
     /**
      * Listener à l'écoute des demandes d'autorisations
@@ -31,24 +45,60 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
      * @throws JMSException
      */
     @Override
-    @JmsListener(destination = "send-demande")
+    @JmsListener(destination = "${spring.activemq.demande.submited.queue}")
     public void listenDemandes(final TextMessage jsonMessage) throws JMSException, JsonProcessingException {
 
         String messageData = null;
 
-        System.out.println("Message received from queue: send-demande");
 
         if(jsonMessage != null) {
             messageData = jsonMessage.getText();
 
-            System.out.println("Message received from queue: send-demande, message: " + messageData);
-            Demande demande = mapper.readValue(messageData, Demande.class);
+            logger.info("Listen demandes message received from queue:");
+            logger.info(messageData);
 
-            ReceptionnerDemandeResult result = autorisationService.receptionnerDemande(demande);
+            try{
+                DemandeReceivedMessage demandeReceivedMessage = demandeMapper.mapFromJson(messageData);
+                Demande demande = DemandeReceivedMessage.toDemande(demandeReceivedMessage);
+                ReceptionnerDemandeResult result = autorisationService.receptionnerDemande(demande);
+                System.out.println(result.getMessage());
+                System.out.println(result.getSuccess());
 
-            System.out.println(result.getMessage());
-            System.out.println(result.getSuccess());
+            }catch(JsonDeserialisationException e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    @Override
+    @JmsListener(destination = "${spring.activemq.vote.submit.queue}")
+    public void listenVotes(final TextMessage jsonMessage) throws JMSException, JsonProcessingException {
+
+        String messageData = null;
+
+
+        if(jsonMessage != null) {
+            messageData = jsonMessage.getText();
+
+            logger.info("Listen votes message received from queue:");
+            logger.info(messageData);
+
+            try {
+
+                Vote vote = SoumissionVoteMessage.toVote(voteMapper.mapFromJson(messageData));
+
+                //Check si autorisation ok
+                VoteSubmitedResult voteSubmitedResult = voteService.validateVote(vote);
+
+            } catch (JsonDeserialisationException e) {
+                throw new RuntimeException(e);
+            }
+
+
 
         }
     }
 }
+
+

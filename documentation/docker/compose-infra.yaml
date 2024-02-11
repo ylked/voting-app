@@ -11,7 +11,7 @@ services:
       - ARTEMIS_PASSWORD=mq
 
 
-  admin_service_db:
+  admin-service-db:
     image: mysql:8.2.0-oracle
     container_name: admin-db
     ports:
@@ -19,10 +19,10 @@ services:
     volumes:
       - "mysql_admin:/var/lib/mysql"
     environment:
-      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=root
     restart: always
 
-  voting_service_db:
+  voting-service-db:
     image: mysql:8.2.0-oracle
     container_name: voting-db
     ports:
@@ -30,7 +30,7 @@ services:
     volumes:
       - "mysql_voting:/var/lib/mysql"
     environment:
-      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=root
     restart: always
 
 volumes:

@@ -1,20 +1,18 @@
 package ch.hearc.adminservice.api.web;
 
 
-import ch.hearc.adminservice.service.CampagneService;
-import ch.hearc.adminservice.service.models.Campagne;
-import ch.hearc.adminservice.service.models.Objet;
-import ch.hearc.adminservice.service.models.actions.CreateObjetForCampagneResult;
-import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusResult;
-import ch.hearc.adminservice.shared.CampagneStatus;
 import ch.hearc.adminservice.api.web.models.request.CreateCampagneRequestBody;
 import ch.hearc.adminservice.api.web.models.request.CreateObjetRequestBody;
-import ch.hearc.adminservice.api.web.models.NoEntityFoundResponseBody;
-import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusAction;
-import ch.hearc.adminservice.api.web.models.response.CampagneSimpleResponseBody;
+import ch.hearc.adminservice.api.web.models.response.*;
+import ch.hearc.adminservice.service.CampagneService;
+import ch.hearc.adminservice.service.models.Campagne;
+import ch.hearc.adminservice.service.models.UpdateCampagneStatusAction;
+import ch.hearc.adminservice.service.models.actions.CreateObjetForCampagneResult;
+import ch.hearc.adminservice.service.models.actions.GetCampagneResultsAction;
+import ch.hearc.adminservice.service.models.actions.UpdateCampagneStatusResult;
+import ch.hearc.adminservice.shared.CampagneStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,23 +22,19 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
- * Controlleur REST oermettant de manipuler des campagnes de votes et le séléments liés
+ * Controlleur REST permettant de manipuler des campagnes de votes et les éléments liés
  */
 @Tag(name = "Campagne", description = "Campagne API")
 @RestController
 @RequestMapping("campagne")
-public class CampagneController {
+public class CampagneController  {
 
     @Autowired
     CampagneService campagneService;
@@ -52,7 +46,7 @@ public class CampagneController {
      * @return ResponseEntity contenant le header Location pointatnt vers la ressources
      */
     @Operation(
-            summary = "Créatiopn d'une campagne de vote",
+            summary = "Création d'une campagne de vote",
             description = "Crééer une campagne de vote avec le status CREATED")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created")
@@ -64,7 +58,7 @@ public class CampagneController {
 
         return ResponseEntity.created(
                 ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                        .buildAndExpand(campagne.getIdentifiant()).toUri()).build();
+                        .buildAndExpand(campagne.getIdentifiant()).toUri()).body(new CampagneCreatedResponseBody(campagne.getIdentifiant()));
 
     }
 
@@ -73,37 +67,45 @@ public class CampagneController {
      * @return une ResponseEntity avec la liste des campagnes dans le body
      */
     @Operation(
-            summary = "Retourne la liste des cmapagnes de vptes",
-            description = "Lister les campagnes de votes quelque soit le status")
+            summary = "Retourne la liste des campagnes de votes",
+            description = "Lister les campagnes de votes quelques soit le status")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok",content = { @Content(schema = @Schema(implementation = CampagneSimpleResponseBody[].class), mediaType = "application/json") })
+            @ApiResponse(responseCode = "200", description = "Ok, retroune la liste des campagnes",
+                    content = { @Content(schema = @Schema(implementation = ListCampagnesResponseBody.class),
+                            mediaType = "application/json") })
     })
     @GetMapping
-    public ResponseEntity<List<CampagneSimpleResponseBody>> getCampagnes( @Parameter(description = "Filtrer par status", required = false) @RequestParam(required = false, name = "status") Optional<CampagneStatus> status){
-
+    public ResponseEntity<ListCampagnesResponseBody> getCampagnes(
+            @Parameter(description = "Filtrer par status", required = false)
+            @RequestParam(required = false, name = "status") Optional<CampagneStatus> status){
 
         List<Campagne> campagnes = campagneService.getCampagnes(status);
 
-        List<CampagneSimpleResponseBody> campagnesResponseBody
-                = campagnes.stream().map(CampagneSimpleResponseBody::mapFromCampagne).toList();
+        ListCampagnesResponseBody responseBody = ListCampagnesResponseBody.mapFromListCampagne(campagnes);
 
-        return ResponseEntity.ok(campagnesResponseBody);
+        return ResponseEntity.ok(responseBody);
     }
 
     @Operation(
             summary = "Retourne le détail d'une campagne de vote",
-            description = "Retourne le détail d'une campagne de cote via son identifiant")
+            description = "Retourne le détail d'une campagne de vote via son identifiant")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(responseCode = "404", description = "NotFound" ),
+            @ApiResponse(responseCode = "200", description = "Ok, détail d'une campagne",
+                    content = { @Content(schema = @Schema(implementation = CampagneResponseBody.class),
+                    mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "NotFound, la campagne n'a pas été trouvée",
+                    content = { @Content(schema = @Schema(implementation = NoEntityFoundResponseBody.class),
+                    mediaType = "application/json") } ),
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCampagneByIdentifiant(@PathVariable("id") String identifiant){
+    public ResponseEntity<?> getCampagneByIdentifiant(
+            @PathVariable("id")
+            @Parameter(name = "id", description = "Identifiant de la campagne", example = "sadhjas-121212-2132kmkljk") String identifiant){
 
         Optional<Campagne> campagne = campagneService.getCampagneByIdentifiant(identifiant);
 
         if(campagne.isPresent()){
-            return ResponseEntity.ok(campagne.get());
+            return ResponseEntity.ok(CampagneResponseBody.mapFromCampagne(campagne.get()));
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(identifiant));
         }
@@ -111,43 +113,24 @@ public class CampagneController {
 
 
     @Operation(
-            summary = "Retourne le détail d'un objet d'une campagne de vote",
-            description = "Retourne le détail d'un objet d'une campagne de vote via l'identifiant de " +
-                    "campagne et l'identifiant de l'objet")
+            summary = "Mise à jour du status d'une camoagne",
+            description = "Permet de mettre à jour le status d'une campagne")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(responseCode = "404", description = "NotFound" ),
-    })
-    @GetMapping("/{id}/objet/{objetId}")
-    public ResponseEntity<?> getObjetByCampagneAndObjetIdentifiant(@PathVariable("id") String idCampagne,@PathVariable("objetId") String idObjet ){
-
-        //check if campagne exist
-        Optional<Campagne> campagne = campagneService.getCampagneByIdentifiant(idCampagne);
-
-        if(campagne.isPresent()){
-            Optional<Objet> optionnalObjet = campagneService.getObjetByIdentifiant(idObjet);
-
-            if(optionnalObjet.isPresent()){
-                return ResponseEntity.ok(optionnalObjet.get());
-            }else{
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(idObjet));
-            }
-
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(idCampagne));
-        }
-    }
-
-    @Operation(
-            summary = "Modifie le status d'une campagne de vote",
-            description = "Modifie le status d'une campagne de vote, dans cette séquence: CREATED -> OPENED -> CLOSED")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(responseCode = "404", description = "NotFound, si identifiant retourne rien" ),
-            @ApiResponse(responseCode = "400", description = "BadRequest, si erreur" ),
+            @ApiResponse(responseCode = "200", description = "Ok, la campagne à été mise à jour",
+                    content = { @Content(schema = @Schema(implementation = UpdateCampagneStatusResult.class),
+                    mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "NotFound, la campagne n'a pas été trouvée ",
+                    content = { @Content(schema = @Schema(implementation = NoEntityFoundResponseBody.class),
+                    mediaType = "application/json") } ),
+            @ApiResponse(responseCode = "400", description = "Erreur technique ",
+                    content = { @Content(schema = @Schema(implementation = UpdateCampagneStatusResult.class),
+                            mediaType = "application/json") } ),
     })
     @PutMapping("/{id}")
-    public ResponseEntity updateCampagneStatus(@PathVariable("id") String identifiant, @Parameter(description = "L'action à appliquer pour changer le status",required = true) @RequestParam(value = "action",required = true) UpdateCampagneStatusAction action){
+    public ResponseEntity<?> updateCampagneStatus(
+            @PathVariable("id") String identifiant,
+            @Parameter(description = "L'action à appliquer pour changer le status",required = true)
+            @RequestParam(value = "action",required = true) UpdateCampagneStatusAction action){
 
         Optional<Campagne> optionalCampagne = campagneService.getCampagneByIdentifiant(identifiant);
 
@@ -155,7 +138,7 @@ public class CampagneController {
             UpdateCampagneStatusResult resultAction = campagneService.updateCampganeStatus(optionalCampagne.get(),action);
 
             if(resultAction.isActionOk()){
-                return ResponseEntity.ok(resultAction.getCampagne());
+                return ResponseEntity.ok(resultAction);
             }else{
                 return ResponseEntity.badRequest().body(resultAction);
             }
@@ -169,23 +152,28 @@ public class CampagneController {
             summary = "Ajoute un objet à une campagne de vote",
             description = "Ajoute un objet à une campagne de vote, la campagne doit être dans le status CREATED")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created"),
-            @ApiResponse(responseCode = "404", description = "NotFound, si identifiant retourne rien" ),
-            @ApiResponse(responseCode = "400", description = "BadRequest, si erreur" ),
+            @ApiResponse(responseCode = "201", description = "Created, l'objet à été créé"),
+            @ApiResponse(responseCode = "404", description = "NotFound, la campagne n'a pas été trouvée",
+                    content = { @Content(schema = @Schema(implementation = NoEntityFoundResponseBody.class),
+                    mediaType = "application/json") } ),
+            @ApiResponse(responseCode = "400", description = "BadRequest, si erreur",
+                    content = { @Content(schema = @Schema(implementation = CreateObjetForCampagneResult.class),
+                    mediaType = "application/json") } ),
     })
     @PostMapping("/{id}/objet")
-    public ResponseEntity<?> addObjetsToCampagne(@RequestBody @Valid CreateObjetRequestBody body, @PathVariable("id") String identifiant){
+    public ResponseEntity<?> addObjetsToCampagne(@RequestBody @Valid CreateObjetRequestBody body, @PathVariable("id") String campagneIdentifiant){
 
         //check if campgane exist by identifiant
-        Optional<Campagne> campagne = campagneService.getCampagneByIdentifiant(identifiant);
+        Optional<Campagne> campagne = campagneService.getCampagneByIdentifiant(campagneIdentifiant);
 
         if(campagne.isPresent()){
             CreateObjetForCampagneResult actionResult = campagneService.createObjetForCampagne(campagne.get(),body.getNom());
 
             if(actionResult.isActionOk()){
                 return ResponseEntity.created(
-                        ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                                .buildAndExpand(actionResult.getObjet().getIdentifiant()).toUri()).build();
+                        ServletUriComponentsBuilder.fromCurrentContextPath().path("/campagne/{id}")
+                                .buildAndExpand(campagneIdentifiant).toUri()).body(
+                                        new ObjetCreatedResponseBody(campagneIdentifiant,actionResult.getObjet().getIdentifiant()));
             }else{
 
                 return ResponseEntity.badRequest().body(actionResult);
@@ -193,22 +181,40 @@ public class CampagneController {
 
 
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(identifiant));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(campagneIdentifiant));
         }
     }
 
-    /**
-     * Méthode gérant les exceptions de validation issues de l'annotation @Valid
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    @Operation(
+            summary = "Retourne les résultats d'une campagne de vote",
+            description = "Retourne les résultats des votes pour une campagem, hors de l'état CREATED")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok, résutats retrounée"),
+            @ApiResponse(responseCode = "404", description = "NotFound, la campagne n'a pas été trouvée",
+                    content = { @Content(schema = @Schema(implementation = NoEntityFoundResponseBody.class),
+                            mediaType = "application/json") } ),
+            @ApiResponse(responseCode = "400", description = "BadRequest, si erreur, ou pas de campagne ouverte",
+                    content = { @Content(schema = @Schema(implementation = NoCampagneOpenedResponseBody.class),
+                            mediaType = "application/json") } ),
+    })
+    @GetMapping("/{id}/results")
+    public ResponseEntity<?> getCampagneResults(@PathVariable("id") String campagneIdentifiant){
+
+        GetCampagneResultsAction result = campagneService.getResultForCampagne(campagneIdentifiant);
+
+        if(result.isCampagneExist()){
+
+            if(!result.InStatusCreated()){
+                return ResponseEntity.ok(new CampagneResultsResponseBody(result.getCampagne()));
+            }else{
+                return ResponseEntity.badRequest().body(new NoCampagneOpenedResponseBody(campagneIdentifiant));
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NoEntityFoundResponseBody(campagneIdentifiant));
+        }
     }
+
+
+
+
 }

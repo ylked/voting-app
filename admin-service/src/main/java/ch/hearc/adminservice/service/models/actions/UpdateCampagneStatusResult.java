@@ -1,39 +1,44 @@
 package ch.hearc.adminservice.service.models.actions;
 
-import ch.hearc.adminservice.service.models.Campagne;
-import ch.hearc.adminservice.service.models.Objet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class UpdateCampagneStatusResult {
 
-    private Campagne campagne;
 
+    @JsonIgnore
     private Boolean isSuccess;
 
     private String message;
 
-    public static UpdateCampagneStatusResult actionOk(Campagne campagne) {
+    private String campagneIdentifiant;
+
+    public String getCampagneIdentifiant() {
+        return campagneIdentifiant;
+    }
+
+    public static UpdateCampagneStatusResult actionOk(String identifiant, String message) {
 
         UpdateCampagneStatusResult result = new UpdateCampagneStatusResult();
         result.isSuccess = Boolean.TRUE;
-        result.campagne = campagne;
+        result.message = "Campagne successfully updated";
+        result.campagneIdentifiant = identifiant;
         return result;
     }
 
-    public static UpdateCampagneStatusResult actionKo(Campagne campagne, String message) {
+    public static UpdateCampagneStatusResult actionKo(String identifiant,String message) {
         UpdateCampagneStatusResult result = new UpdateCampagneStatusResult();
         result.isSuccess = Boolean.FALSE;
-        result.campagne = campagne;
         result.message = message;
+        result.campagneIdentifiant = identifiant;
         return result;
     }
 
+    @JsonIgnore
     public Boolean isActionOk(){
         return this.isSuccess;
     }
 
-    public Campagne getCampagne() {
-        return campagne;
-    }
+
 
     public String getMessage() {
         return message;

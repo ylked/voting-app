@@ -1,4 +1,4 @@
-package ch.hearc.votingservice.api.web;
+package ch.hearc.votingservice.remote;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

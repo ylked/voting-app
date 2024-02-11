@@ -12,6 +12,17 @@ public class Objet {
     //Identifiant métier de l'objet
     private String identifiant;
 
+    private Integer votes;
+
+    public Integer getVotes() {
+        return votes;
+    }
+
+    public Objet(String identifiant, String nom, Integer votes) {
+        this(identifiant, nom);
+        this.votes = votes;
+    }
+
 
     public static Objet nouvelObjet(String nom){
         return new Objet(nom);
@@ -34,6 +45,12 @@ public class Objet {
 
     public static Objet mapFromEntity(ObjetEntity entity) {
         return new Objet(entity.getIdentifiant(), entity.getNom());
+    }
+
+
+    public static Objet mapFromEntityWithVotes(ObjetEntity entity){
+
+        return new Objet(entity.getIdentifiant(), entity.getNom(), entity.getVotes().size());
     }
 
     public String getNom() {

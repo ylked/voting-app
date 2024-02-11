@@ -1,4 +1,4 @@
-package ch.hearc.adminservice.service.models.actions;
+package ch.hearc.adminservice.service.models;
 
 public enum UpdateCampagneStatusAction {
     OPEN, CLOSE;
