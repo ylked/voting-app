@@ -7,6 +7,8 @@ import ch.hearc.adminservice.jms.models.RefusAutorisationMessaage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.TextMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JmsMessageProducteurImpl implements JmsMessageProducteur {
+
+    private final Logger LOGGER = LoggerFactory
+            .getLogger(JmsMessageProducteurImpl.class);
 
     @Value("${spring.activemq.demande.accepted.queue}")
     String demandeAcceptedQueue;
@@ -41,7 +46,7 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
                 return message;
             });
 
-            System.out.println("Message send to queue: " + demandeAcceptedQueue + ", message: " + jsonObj);
+            LOGGER.info("Message send to queue: " + demandeAcceptedQueue + ", message: " + jsonObj);
 
         }
         catch (Exception ex) {
@@ -60,7 +65,7 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
                 return message;
             });
 
-            System.out.println("Message send to queue: " + demandeDeniedQueue + ", message: " + jsonObj);
+            LOGGER.info("Message send to queue: " + demandeDeniedQueue + ", message: " + jsonObj);
 
         }
         catch (Exception ex) {

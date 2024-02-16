@@ -24,3 +24,4 @@ ${Ansi.RED}Profile: ${spring.profiles.active}
 ${Ansi.GREEN}Swagger:            /swagger-ui/index.html
 ${Ansi.GREEN}H2 (if applicable): ${spring.h2.console.path}
 ${Ansi.BLUE}----------------------------------------------------------------------------------------------------------------
+${Ansi.DEFAULT}

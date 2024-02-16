@@ -33,6 +33,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     restart: always
 
+
 volumes:
   mysql_admin:
   mysql_voting:
