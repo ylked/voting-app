@@ -3,8 +3,8 @@ services:
   admin-service:
     container_name: admin-service
     build:
-      context: ../../admin-service
-      dockerfile: Dockerfile
+      context: ../admin-service
+      dockerfile: ../admin-service/Dockerfile
     image: admin-service
     environment:
       - ACTIVEMQ_URI=tcp://active-mq:61616
@@ -21,8 +21,8 @@ services:
   voting-service:
     container_name: voting-service
     build:
-      context: ../../voting-service
-      dockerfile: Dockerfile
+      context: ../voting-service
+      dockerfile: ../voting-service/Dockerfile
     image: voting-service
     environment:
       - ACTIVEMQ_URI=tcp://active-mq:61616
