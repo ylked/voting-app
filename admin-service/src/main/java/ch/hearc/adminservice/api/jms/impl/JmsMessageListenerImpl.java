@@ -88,9 +88,10 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
 
                 Vote vote = SoumissionVoteMessage.toVote(voteMapper.mapFromJson(messageData));
 
-                //Check si autorisation ok
+                //TODO Check si autorisation ok
                 VoteSubmitedResult voteSubmitedResult = voteService.validateVote(vote);
 
+                LOGGER.info("Vote submitted result: " + voteSubmitedResult.getMessage());
             } catch (JsonDeserialisationException e) {
                 throw new RuntimeException(e);
             }

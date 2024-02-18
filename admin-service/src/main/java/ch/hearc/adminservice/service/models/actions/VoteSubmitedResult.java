@@ -18,4 +18,12 @@ public class VoteSubmitedResult {
     public static VoteSubmitedResult ko(String message) {
         return new VoteSubmitedResult(Boolean.FALSE, message);
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Boolean getSuccess() {
+        return isSuccess;
+    }
 }

@@ -64,7 +64,7 @@
 										}
 									}
 								},
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/campagne"
 							},
 							"response": []
 						},
@@ -140,7 +140,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/campagne"
 							},
 							"response": []
 						},
@@ -217,11 +217,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id"
@@ -314,11 +314,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -390,11 +390,11 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:campagneId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":campagneId"
@@ -478,11 +478,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -562,11 +562,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/results",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -637,11 +637,11 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:campagneId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":campagneId"
@@ -713,11 +713,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id"
@@ -825,11 +825,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/results",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -900,11 +900,11 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:campagneId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":campagneId"
@@ -976,11 +976,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id"
@@ -1160,7 +1160,7 @@
 										}
 									}
 								},
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/campagne"
 							},
 							"response": []
 						},
@@ -1244,11 +1244,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -1344,11 +1344,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -1419,11 +1419,11 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:campagneId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":campagneId"
@@ -1729,7 +1729,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes"
 							},
 							"response": []
 						},
@@ -1803,11 +1803,11 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes/:demandeId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"autorisation",
 										"demandes",
@@ -1963,7 +1963,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes"
 							},
 							"response": []
 						},
@@ -2034,7 +2034,7 @@
 								}
 							}
 						},
-						"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+						"url": "{{admin-service-host}}:{{admin-service-port}}/campagne"
 					},
 					"response": [
 						{
@@ -2051,7 +2051,7 @@
 										}
 									}
 								},
-								"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne"
+								"url": "{{admin-service-host}}:{{admin-service-port}}/campagne/campagne"
 							},
 							"_postman_previewlanguage": null,
 							"header": null,
@@ -2065,7 +2065,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{admin-service-host}}:{{admin-sercice-port}}/campagne"
+						"url": "{{admin-service-host}}:{{admin-service-port}}/campagne"
 					},
 					"response": []
 				},
@@ -2075,11 +2075,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne?status=CREATED",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne?status=CREATED",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne"
 							],
@@ -2098,11 +2098,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne?status=CREATED",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne?status=CREATED",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne"
 									],
@@ -2127,11 +2127,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne/:id",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/campagne/:id",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne",
 								"campagne",
@@ -2152,11 +2152,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/campagne/:id",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/campagne/:id",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										"campagne",
@@ -2183,11 +2183,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/results",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne",
 								":id",
@@ -2196,7 +2196,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "2cc6a2f4-22a6-4ca8-a562-01685ff1c93f"
+									"value": ""
 								}
 							]
 						}
@@ -2208,11 +2208,11 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/results",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/results",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -2248,11 +2248,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne",
 								":id",
@@ -2282,11 +2282,11 @@
 									}
 								},
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"campagne",
 										":id",
@@ -2313,11 +2313,11 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:campagneId?action=OPEN",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:campagneId?action=OPEN",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne",
 								":campagneId"
@@ -2343,11 +2343,11 @@
 								"method": "PUT",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/:campagneId?action=OPEN",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/:campagneId?action=OPEN",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										":campagneId"
 									],
@@ -2377,7 +2377,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes"
+						"url": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes"
 					},
 					"response": []
 				},
@@ -2387,11 +2387,11 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes/:demandeId",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"autorisation",
 								"demandes",
@@ -2412,11 +2412,11 @@
 								"method": "POST",
 								"header": [],
 								"url": {
-									"raw": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation/demandes/:demandeId",
+									"raw": "{{admin-service-host}}:{{admin-service-port}}/autorisation/demandes/:demandeId",
 									"host": [
 										"{{admin-service-host}}"
 									],
-									"port": "{{admin-sercice-port}}",
+									"port": "{{admin-service-port}}",
 									"path": [
 										"autorisation",
 										"demandes",
@@ -2452,11 +2452,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{admin-service-host}}:{{admin-sercice-port}}/campagne/:id/objet",
+							"raw": "{{admin-service-host}}:{{admin-service-port}}/campagne/:id/objet",
 							"host": [
 								"{{admin-service-host}}"
 							],
-							"port": "{{admin-sercice-port}}",
+							"port": "{{admin-service-port}}",
 							"path": [
 								"campagne",
 								":id",
@@ -2477,7 +2477,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{admin-service-host}}:{{admin-sercice-port}}/autorisation"
+						"url": "{{admin-service-host}}:{{admin-service-port}}/autorisation"
 					},
 					"response": []
 				}
