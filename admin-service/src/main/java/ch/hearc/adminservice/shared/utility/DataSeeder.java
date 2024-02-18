@@ -1,5 +1,6 @@
 package ch.hearc.adminservice.shared.utility;
 
+import ch.hearc.adminservice.jms.impl.JmsMessageProducteurImpl;
 import ch.hearc.adminservice.repository.*;
 import ch.hearc.adminservice.repository.entity.AutorisationEntity;
 import ch.hearc.adminservice.repository.entity.CampagneEntity;
@@ -7,6 +8,8 @@ import ch.hearc.adminservice.repository.entity.ObjetEntity;
 import ch.hearc.adminservice.repository.entity.VoteEntity;
 import ch.hearc.adminservice.shared.CampagneStatus;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,10 @@ import java.util.stream.IntStream;
 @Component
 @Profile(value = "init-datas")
 public class DataSeeder {
+
+    private final Logger LOGGER = LoggerFactory
+            .getLogger(DataSeeder.class);
+
     @Autowired
     ObjetRepository objetRepository;
     @Autowired
@@ -112,7 +119,7 @@ public class DataSeeder {
 
     private void generateCompleteCampagneClosed() {
         //******** Campagne complète avec votes, autorisations et objets en status CLOSED
-        System.out.println("***** Strating complete campagne generation *****");
+        LOGGER.info("***** Strating complete campagne generation *****");
         CampagneEntity campagneEntityClosed = new CampagneEntity();
         campagneEntityClosed.setNom("Pour une suisse sans armée");
         String idCampagneClosed = UUID.randomUUID().toString();
@@ -137,10 +144,10 @@ public class DataSeeder {
         //Génération aléatoire de autorisation/votes
         int nb = new Random().nextInt(5,100);
 
-        System.out.println(nb + " votes iterations");
+        LOGGER.info(nb + " votes iterations");
         IntStream.range(1,nb).forEach(iteration -> {
 
-            System.out.println("it");
+
             ObjetEntity objetEntity;
 
             //choix aléatoire de l'objet
