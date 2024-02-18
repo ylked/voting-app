@@ -35,7 +35,7 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
     @Autowired
     VoteJmsDeserializerMapper voteMapper;
 
-    Logger logger = LoggerFactory.getLogger(JmsMessageListenerImpl.class);
+    Logger LOGGER = LoggerFactory.getLogger(JmsMessageListenerImpl.class);
 
     /**
      * Listener à l'écoute des demandes d'autorisations
@@ -54,15 +54,15 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
         if(jsonMessage != null) {
             messageData = jsonMessage.getText();
 
-            logger.info("Listen demandes message received from queue:");
-            logger.info(messageData);
+            LOGGER.info("Listen demandes message received from queue:");
+            LOGGER.info(messageData);
 
             try{
                 DemandeReceivedMessage demandeReceivedMessage = demandeMapper.mapFromJson(messageData);
                 Demande demande = DemandeReceivedMessage.toDemande(demandeReceivedMessage);
                 ReceptionnerDemandeResult result = autorisationService.receptionnerDemande(demande);
-                System.out.println(result.getMessage());
-                System.out.println(result.getSuccess());
+                LOGGER.info("Autorisation demande result: " + result.getMessage());
+                LOGGER.info("Autorisation demande isSuccess: " + result.getSuccess());
 
             }catch(JsonDeserialisationException e){
                 e.printStackTrace();
@@ -81,8 +81,8 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
         if(jsonMessage != null) {
             messageData = jsonMessage.getText();
 
-            logger.info("Listen votes message received from queue:");
-            logger.info(messageData);
+            LOGGER.info("Listen votes message received from queue:");
+            LOGGER.info(messageData);
 
             try {
 
