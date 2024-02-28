@@ -1,8 +1,7 @@
-package ch.hearc.adminservice.api.web.models.response;
+package ch.hearc.votingservice.remote.models;
 
-import ch.hearc.adminservice.api.web.models.CampagneBody;
-import ch.hearc.adminservice.api.web.models.ObjetBody;
-import ch.hearc.adminservice.service.models.Campagne;
+
+import ch.hearc.votingservice.service.models.Campagne;
 
 import java.util.List;
 
@@ -19,18 +18,7 @@ public class ListCampagnesResponseBody {
         this.campagnes = campagnes;
     }
 
-    public static ListCampagnesResponseBody mapFromListCampagne(List<Campagne> campagnes) {
 
-        List<CampagneBody> campagnesBody = campagnes.stream().map(campagne -> new CampagneBody(
-                campagne.getNom(),
-                campagne.getStatus(),
-                campagne.getIdentifiant(),
-                campagne.getObjets().stream().map(objet ->
-                        new ObjetBody(objet.getNom(), objet.getIdentifiant())).toList())).toList();
-
-        return new ListCampagnesResponseBody(campagnesBody.size(),campagnesBody);
-
-    }
 
     public Integer getNbCampagnes() {
         return total;

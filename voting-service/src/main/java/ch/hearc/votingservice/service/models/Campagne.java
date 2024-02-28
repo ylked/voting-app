@@ -1,5 +1,6 @@
 package ch.hearc.votingservice.service.models;
 
+import ch.hearc.votingservice.remote.models.CampagneBody;
 import ch.hearc.votingservice.remote.models.CampagneResponseBody;
 import ch.hearc.votingservice.shared.CampagneStatus;
 
@@ -62,7 +63,7 @@ public class Campagne {
         return identifiant;
     }
 
-    public static Campagne fromCampagneResponsBody(CampagneResponseBody campagneResponseBody){
+    public static Campagne fromCampagneResponsBody(CampagneBody campagneResponseBody){
 
         Campagne c =  new Campagne(
                 campagneResponseBody.getNom(),

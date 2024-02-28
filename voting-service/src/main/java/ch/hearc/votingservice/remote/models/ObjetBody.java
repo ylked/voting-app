@@ -1,6 +1,6 @@
-package ch.hearc.adminservice.api.web.models;
+package ch.hearc.votingservice.remote.models;
 
-public class ObjetBody{
+public class ObjetBody {
     private String nom;
     //Identifiant métier de l'objet
     private String identifiant;

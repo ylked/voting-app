@@ -28,7 +28,7 @@ public class SendVoteResult {
         result.campagneIdentifiant = campagneIdentifiant;
         result.message = message;
         result.autorisatonCode = autorisationCode;
-        result.isSuccess = Boolean.FALSE;
+        result.isSuccess = Boolean.TRUE;
         return result;
     }
 

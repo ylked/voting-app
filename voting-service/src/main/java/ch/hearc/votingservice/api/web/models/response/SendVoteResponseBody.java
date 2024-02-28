@@ -2,19 +2,19 @@ package ch.hearc.votingservice.api.web.models.response;
 
 public class SendVoteResponseBody {
 
-    private String messgae;
+    private String message;
 
-    public SendVoteResponseBody(String messgae) {
-        this.messgae = messgae;
+    public SendVoteResponseBody(String message) {
+        this.message = message;
     }
 
 
 
-    public String getMessgae() {
-        return messgae;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMessgae(String messgae) {
-        this.messgae = messgae;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

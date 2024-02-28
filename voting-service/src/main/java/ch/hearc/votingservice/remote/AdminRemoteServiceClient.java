@@ -1,8 +1,8 @@
 package ch.hearc.votingservice.remote;
 
 import ch.hearc.votingservice.remote.models.CampagneResponseBody;
+import ch.hearc.votingservice.remote.models.ListCampagnesResponseBody;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,7 +15,7 @@ public interface AdminRemoteServiceClient {
      *
      * @return la liste des campagnes ouvertes
      */
-    List<CampagneResponseBody> getCampagnesOuvertes();
+    ListCampagnesResponseBody getCampagnesOuvertes();
 
     Boolean isCampagneExistAndOuverte(String campagneIdentifiant);
 

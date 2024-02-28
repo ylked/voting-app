@@ -1,5 +1,7 @@
-package ch.hearc.adminservice.api.web.models;
-import ch.hearc.adminservice.shared.CampagneStatus;
+package ch.hearc.votingservice.remote.models;
+
+
+import ch.hearc.votingservice.shared.CampagneStatus;
 
 import java.util.List;
 

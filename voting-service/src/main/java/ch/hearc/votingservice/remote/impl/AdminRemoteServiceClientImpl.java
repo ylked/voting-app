@@ -2,6 +2,7 @@ package ch.hearc.votingservice.remote.impl;
 
 import ch.hearc.votingservice.remote.AdminRemoteServiceClient;
 import ch.hearc.votingservice.remote.models.CampagneResponseBody;
+import ch.hearc.votingservice.remote.models.ListCampagnesResponseBody;
 import ch.hearc.votingservice.shared.CampagneStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,8 +23,8 @@ public class AdminRemoteServiceClientImpl implements AdminRemoteServiceClient {
 
 
     @Override
-    public List<CampagneResponseBody> getCampagnesOuvertes() {
-        List<CampagneResponseBody> campagnes = adminServiceClient.get()
+    public ListCampagnesResponseBody getCampagnesOuvertes() {
+        ListCampagnesResponseBody campagnes = adminServiceClient.get()
                 .uri("/campagne?status=OPENED")
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
