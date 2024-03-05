@@ -115,7 +115,7 @@ public class AutorisationServiceImpl implements AutorisationService {
                 return ReceptionnerDemandeResult.ok(demande,"Demande successfully created");
             }else{
                 //Refus automatique si demande pas ou plus dans etat OPENED
-                RefusAutorisation refusAutorisation = new RefusAutorisation(demande.getIdentifiant(), "The demande with the identifiant: " + demande.getIdentifiant() + " isn't in the status OPENED");
+                RefusAutorisation refusAutorisation = new RefusAutorisation(optionnalCampagne.get().getIdentifiant(),demande.getIdentifiant(), "The campagne with the identifiant: " + optionnalCampagne.get().getIdentifiant() + " isn't in the status OPENED");
                 jmsMessageProducteur.sendDeniedAutorisation(RefusAutorisation.toJmsMessage(refusAutorisation));
                 return ReceptionnerDemandeResult.ko(demande,"The campagne doesnn't exist or is not opened");
             }
@@ -123,11 +123,21 @@ public class AutorisationServiceImpl implements AutorisationService {
 
         }else{
             //Refus automatique si campagne n'existe pas
-            RefusAutorisation refusAutorisation = new RefusAutorisation(demande.getIdentifiant(),"The demande with the identifiant: " + demande.getIdentifiant() + " doesnt exist" );
-            jmsMessageProducteur.sendDeniedAutorisation(RefusAutorisation.toJmsMessage(refusAutorisation));
+            RefusAutorisation refusAutorisation = new RefusAutorisation("",demande.getIdentifiant(),"The campagne with the identifiant: " + demande.getIdentifiant() + " doesnt exist" );
+            jmsMessageProducteur.sendDeniedAutorisation( RefusAutorisation.toJmsMessage(refusAutorisation));
             return ReceptionnerDemandeResult.ko(demande,"The campagne doesnn't exist or is not opened");
 
         }
+    }
+
+    @Override
+    public RefusAutorisation rejeteDemande(String identifiant, String campagneId) throws JsonProcessingException {
+        RefusAutorisation refusAutorisation = new RefusAutorisation(campagneId,identifiant,"The demande  was rejected");
+
+        DemandeEntity demandeEntity = demandeRepository.findByIdentifiant(identifiant).get();
+        demandeRepository.delete(demandeEntity);
+        jmsMessageProducteur.sendDeniedAutorisation(RefusAutorisation.toJmsMessage(refusAutorisation));
+        return refusAutorisation;
     }
 
 

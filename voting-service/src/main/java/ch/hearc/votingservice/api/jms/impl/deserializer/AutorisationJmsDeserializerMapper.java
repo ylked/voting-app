@@ -33,4 +33,16 @@ public class AutorisationJmsDeserializerMapper {
 
 
     }
+
+    public RejectedAutorisationDto mapRejectedFromJson(String json) throws  JsonDeserialisationException {
+
+        try{
+            ObjectMapper mapper = getObjectMapperWithValidation();
+            return mapper.readValue(json,RejectedAutorisationDto.class);
+        }catch(ConstraintViolationException | JsonProcessingException e){
+            throw new JsonDeserialisationException(e.getMessage(),e);
+        }
+
+
+    }
 }

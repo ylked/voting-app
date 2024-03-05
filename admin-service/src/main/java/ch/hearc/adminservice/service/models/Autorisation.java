@@ -37,6 +37,7 @@ public class Autorisation {
     public static AutorisationEntity toEntity(Autorisation autorisation) {
         AutorisationEntity autorisationEntity = new AutorisationEntity();
         autorisationEntity.setAutorisationCode(autorisation.autorisationCode);
+        autorisationEntity.setIdentifiant(autorisation.identifiant);
         return  autorisationEntity;
     }
 

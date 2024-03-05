@@ -3,7 +3,7 @@ package ch.hearc.adminservice.jms.impl;
 
 import ch.hearc.adminservice.jms.JmsMessageProducteur;
 import ch.hearc.adminservice.jms.models.AutorisationMessage;
-import ch.hearc.adminservice.jms.models.RefusAutorisationMessaage;
+import ch.hearc.adminservice.jms.models.RefusAutorisationMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.TextMessage;
@@ -39,12 +39,7 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
     public void sendAutorisation(AutorisationMessage autorisation) throws JsonProcessingException {
         try {
 
-            String jsonObj = new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(autorisation);
-            jmsTemplate.send(demandeAcceptedQueue, messageCreator -> {
-                TextMessage message = messageCreator.createTextMessage();
-                message.setText(jsonObj);
-                return message;
-            });
+            String jsonObj = sendMessage(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(autorisation), demandeAcceptedQueue);
 
             LOGGER.info("Message send to queue: " + demandeAcceptedQueue + ", message: " + jsonObj);
 
@@ -54,16 +49,21 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
         }
     }
 
+    private String sendMessage(String jsonObj, String demandeAcceptedQueue) throws JsonProcessingException {
+
+        jmsTemplate.send(demandeAcceptedQueue, messageCreator -> {
+            TextMessage message = messageCreator.createTextMessage();
+            message.setText(jsonObj);
+            return message;
+        });
+        return jsonObj;
+    }
+
     @Override
-    public void sendDeniedAutorisation(RefusAutorisationMessaage refusAutorisation) throws JsonProcessingException {
+    public void sendDeniedAutorisation(RefusAutorisationMessage refusAutorisation) throws JsonProcessingException {
         try {
 
-            String jsonObj = new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(refusAutorisation);
-            jmsTemplate.send(demandeDeniedQueue, messageCreator -> {
-                TextMessage message = messageCreator.createTextMessage();
-                message.setText(jsonObj);
-                return message;
-            });
+            String jsonObj = sendMessage(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(refusAutorisation), demandeDeniedQueue);
 
             LOGGER.info("Message send to queue: " + demandeDeniedQueue + ", message: " + jsonObj);
 

@@ -22,7 +22,15 @@ public class DemandeEntity {
     @Enumerated(EnumType.STRING)
     private DemandeStatus status;
 
+    private String rejectedReason;
 
+    public String getRejectedReason() {
+        return rejectedReason;
+    }
+
+    public void setRejectedReason(String rejectedReaason) {
+        this.rejectedReason = rejectedReaason;
+    }
 
     public DemandeEntity() {
     }

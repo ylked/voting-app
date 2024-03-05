@@ -1,6 +1,5 @@
 package ch.hearc.votingservice.service.impl;
 
-import ch.hearc.votingservice.api.jms.impl.JmsMessageListenerImpl;
 import ch.hearc.votingservice.jms.models.DemandeMessage;
 import ch.hearc.votingservice.jms.models.VoteMessage;
 import ch.hearc.votingservice.remote.impl.Error400Exception;
@@ -86,15 +85,15 @@ public class AutorisationServiceImpl implements AutorisationService {
     public ValidateAutorisationResult validateAutorisation(@Valid Autorisation autorisation){
 
         //Recherche de la demande liée
-        Optional<DemandeEntity> demandeEntity = demandeRepository.findByIdentifiant(autorisation.getDemandeId());
+        Optional<DemandeEntity> optionalDemandeEntity = demandeRepository.findByIdentifiant(autorisation.getDemandeId());
         //Recherche de la campagne
         Optional<CampagneResponseBody> campagne = adminRemoteServiceClient.getCampagneByIdentifiant(autorisation.getCampagneId());
 
-        if(demandeEntity.isPresent()){
+        if(optionalDemandeEntity.isPresent()){
 
             if(campagne.isPresent()){
 
-                Demande demande = Demande.fromEntity(demandeEntity.get());
+                Demande demande = Demande.fromEntity(optionalDemandeEntity.get());
 
                 //Création de l'objet votant
                 VotantEntity votantEntity = new VotantEntity();
@@ -105,14 +104,16 @@ public class AutorisationServiceImpl implements AutorisationService {
                 votantEntity.setCampagneIdentifiant(campagne.get().getIdentifiant());
                 votantRepository.save(votantEntity);
 
-                //supression de l'objet demande
-                demandeRepository.delete(demandeEntity.get());
+                //maj de l'objet demande
+                DemandeEntity demandeEntity = optionalDemandeEntity.get();
+                demandeEntity.setStatus(DemandeStatus.VALIDATED);
+                demandeRepository.save(demandeEntity);
 
                 return ValidateAutorisationResult.ok(autorisation.getDemandeId(), autorisation.getCampagneId(), "Votant successfully created for campagne identifiant: " + campagne.get().getIdentifiant());
 
             }else{
-                DemandeEntity demandeEntityOnError = demandeEntity.get();
-                demandeEntityOnError.setStatus(DemandeStatus.ERROR);
+                DemandeEntity demandeEntityOnError = optionalDemandeEntity.get();
+                demandeEntityOnError.setStatus(DemandeStatus.REJECTED);
                 demandeRepository.save(demandeEntityOnError);
 
                 return ValidateAutorisationResult.ko(autorisation.getDemandeId(), autorisation.getCampagneId(), "Campagne with identifiant: " + autorisation.getCampagneId() + " doesn't exist or is not longer OPENED");
@@ -212,6 +213,20 @@ public class AutorisationServiceImpl implements AutorisationService {
 
         return demandes;
 
+    }
+
+    @Override
+    public Boolean rejectDemandeAutorisation(String demamndeId, String reasonMessage) {
+
+        Optional<Demande> optionalDemande = getDemandeByIdentifiant(demamndeId);
+
+        DemandeEntity demandeEntity = demandeRepository.findByIdentifiant(optionalDemande.get().getIdentifiant()).get();
+        demandeEntity.setStatus(DemandeStatus.REJECTED);
+        demandeEntity.setRejectedReason(reasonMessage);
+
+        demandeRepository.save(demandeEntity);
+
+        return Boolean.TRUE;
     }
 
 

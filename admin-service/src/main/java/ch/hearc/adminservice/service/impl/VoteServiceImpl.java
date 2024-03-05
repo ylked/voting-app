@@ -34,9 +34,8 @@ public class VoteServiceImpl implements VoteService {
 
             CampagneEntity campagneEntity = optionalCampagneEntity.get();
 
-            Optional<ObjetEntity> optionalObjetEntity = campagneEntity.getObjets().stream().filter(entity -> {
-                return entity.getIdentifiant().equals(vote.getObjetIdentifiant());
-            }).findFirst();
+            Optional<ObjetEntity> optionalObjetEntity = campagneEntity.getObjets().stream().filter(entity ->
+                    entity.getIdentifiant().equals(vote.getObjetIdentifiant())).findFirst();
 
             if(optionalObjetEntity.isPresent()){
                 ObjetEntity objetEntity = optionalObjetEntity.get();

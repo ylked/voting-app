@@ -25,4 +25,8 @@ public interface AutorisationService {
     Optional<Demande> getDemandeByIdentifiant(String identifiant);
 
     List<Demande> findAllDemandes(Optional<DemandeStatus> demandeStatus);
+
+
+
+    Boolean rejectDemandeAutorisation(String demamndeId, String reasonMessage);
 }

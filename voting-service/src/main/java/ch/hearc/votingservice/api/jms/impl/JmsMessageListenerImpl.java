@@ -3,6 +3,7 @@ package ch.hearc.votingservice.api.jms.impl;
 import ch.hearc.votingservice.api.jms.JmsMessageListener;
 import ch.hearc.votingservice.api.jms.impl.deserializer.AutorisationJmsDeserializerMapper;
 import ch.hearc.votingservice.api.jms.impl.deserializer.JsonDeserialisationException;
+import ch.hearc.votingservice.api.jms.impl.deserializer.RejectedAutorisationDto;
 import ch.hearc.votingservice.api.jms.models.AutorisationDto;
 import ch.hearc.votingservice.service.AutorisationService;
 import ch.hearc.votingservice.service.models.Autorisation;
@@ -31,6 +32,34 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
     @JmsListener(destination = "${spring.activemq.demande.denied.queue}")
     @Override
     public void listenRefusDemande(TextMessage jsonMessage) throws JMSException, JsonProcessingException {
+
+        logger.info("listenRefusDemande jms listener triggered");
+        String messageData = null;
+
+
+        if(jsonMessage != null) {
+            messageData = jsonMessage.getText();
+
+            logger.info("Listen refus message received from queue:");
+            logger.info(messageData);
+
+            //Conversion en refus
+            try{
+
+
+                RejectedAutorisationDto rejectedAutorisationDto = mapper.mapRejectedFromJson(messageData);
+
+                Boolean isRejected = autorisationService.rejectDemandeAutorisation(rejectedAutorisationDto.getDemandeIdentifiant(),rejectedAutorisationDto.getMessage());
+
+
+                logger.info("Rejected demande process done, result: " + (isRejected ? "Ok" : "Ko"));
+            }catch (JsonDeserialisationException e){
+                e.printStackTrace();
+                logger.error(e.getMessage());
+            }
+
+
+        }
 
     }
 
@@ -66,6 +95,7 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
                 logger.info("Autorisation process done, result: " + result.getMessage());
             }catch (JsonDeserialisationException e){
                 e.printStackTrace();
+                logger.error(e.getMessage());
             }
 
 
