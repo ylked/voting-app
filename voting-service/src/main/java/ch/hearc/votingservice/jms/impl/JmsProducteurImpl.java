@@ -2,6 +2,7 @@ package ch.hearc.votingservice.jms.impl;
 
 import ch.hearc.votingservice.jms.JmsProducteur;
 import ch.hearc.votingservice.jms.models.DemandeMessage;
+import ch.hearc.votingservice.jms.models.TestMessage;
 import ch.hearc.votingservice.jms.models.VoteMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.TextMessage;
@@ -23,6 +24,9 @@ public class JmsProducteurImpl implements JmsProducteur {
 
     @Value("${spring.activemq.vote.submit.queue}")
     String voteQueue;
+
+    @Value("${spring.activemq.test.queue}")
+    String testQueue;
 
     @Autowired
     JmsTemplate jmsTemplate;
@@ -63,5 +67,20 @@ public class JmsProducteurImpl implements JmsProducteur {
         }
     }
 
+    @Override
+    public void sendTestMessage(TestMessage msg) {
+        try {
 
+            String jsonObj = new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(msg);
+            jmsTemplate.send(testQueue, messageCreator -> {
+                TextMessage message = messageCreator.createTextMessage();
+                message.setText(jsonObj);
+                return message;
+            });
+            logger.info("Message send to queue: " + testQueue + ", message: " + jsonObj);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }
