@@ -1,4 +1,4 @@
-package ch.hearc.adminservice.configuration;
+package ch.hearc.broadcastvoteclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -11,16 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
-/**
- * Classe de configuration de la connection sur activeMQ
- *
- */
 @Configuration
 @EnableJms
 public class ActiveMQConfiguration {
@@ -32,11 +29,6 @@ public class ActiveMQConfiguration {
     @Value("${spring.activemq.password}")
     String BROKER_PASSWORD;
 
-
-    /**
-     * Retourne la factory de connection
-     * @return une instance de connection factory
-     */
     @Bean
     public ActiveMQConnectionFactory connectionFactory(){
         ActiveMQConnectionFactory connectionFactory = new  ActiveMQConnectionFactory();
@@ -47,10 +39,6 @@ public class ActiveMQConfiguration {
         return connectionFactory;
     }
 
-    /**
-     * Retourne l'objet responsable de convertir des classes Java en JSON
-     * @return une instance de convertisseur
-     */
     @Bean
     public MessageConverter messageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
@@ -59,10 +47,6 @@ public class ActiveMQConfiguration {
         return converter;
     }
 
-    /**
-     * Mapper pour générer des objets Java en json
-     * @return une instance de objectMapper
-     */
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -71,10 +55,6 @@ public class ActiveMQConfiguration {
         return mapper;
     }
 
-    /**
-     * Template de base pour envoyer des messages sur le bus
-     * @return une instance de jmsTemplate
-     */
     @Bean
     public JmsTemplate jmsTemplate(){
         JmsTemplate template = new JmsTemplate();
@@ -86,10 +66,16 @@ public class ActiveMQConfiguration {
         return template;
     }
 
-    /**
-     * Permet de définir si la destination est en mode point-à-point ou broadcast
-     * @return une instance de destinationResolver
-     */
+    @Bean
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+        DefaultJmsListenerContainerFactory factory =
+                new DefaultJmsListenerContainerFactory();
+        factory
+                .setConnectionFactory(connectionFactory());
+        factory.setPubSubDomain(true);
+
+        return factory;
+    }
     @Bean
     DynamicDestinationResolver destinationResolver() {
         return new DynamicDestinationResolver() {

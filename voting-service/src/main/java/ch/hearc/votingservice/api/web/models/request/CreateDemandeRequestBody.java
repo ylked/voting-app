@@ -9,12 +9,12 @@ public class CreateDemandeRequestBody {
 
     @NotBlank(message = "Le nom est obligatoire")
     @NotEmpty(message = "Le nom ne doit pas êre vide")
-    @Size(min = 5, max = 50, message = "La taille du nom doit être comprise entre 5 et 50 caractères")
+    @Size(min = 2, max = 50, message = "La taille du nom doit être comprise entre 2 et 50 caractères")
     private String nom;
 
     @NotBlank(message = "Le prenom est obligatoire")
     @NotEmpty(message = "Le prenom ne doit pas êre vide")
-    @Size(min = 5, max = 50, message = "La taille du prenom doit être comprise entre 5 et 50 caractères")
+    @Size(min = 2, max = 50, message = "La taille du prenom doit être comprise entre 2 et 50 caractères")
     private String prenom;
 
     @NotBlank(message = "L'identifiant de campagne est obligatoire")

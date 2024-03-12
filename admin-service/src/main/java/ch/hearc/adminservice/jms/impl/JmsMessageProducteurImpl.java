@@ -4,6 +4,7 @@ package ch.hearc.adminservice.jms.impl;
 import ch.hearc.adminservice.jms.JmsMessageProducteur;
 import ch.hearc.adminservice.jms.models.AutorisationMessage;
 import ch.hearc.adminservice.jms.models.RefusAutorisationMessage;
+import ch.hearc.adminservice.jms.models.VoteBroadCastMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.TextMessage;
@@ -25,6 +26,9 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
 
     @Value("${spring.activemq.demande.denied.queue}")
     String demandeDeniedQueue;
+
+    @Value("${spring.activemq.vote.broadcast.topic}")
+    String voteBroadcastTopic;
 
     @Autowired
     JmsTemplate jmsTemplate;
@@ -49,9 +53,9 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
         }
     }
 
-    private String sendMessage(String jsonObj, String demandeAcceptedQueue) throws JsonProcessingException {
+    private String sendMessage(String jsonObj, String destination) throws JsonProcessingException {
 
-        jmsTemplate.send(demandeAcceptedQueue, messageCreator -> {
+        jmsTemplate.send(destination, messageCreator -> {
             TextMessage message = messageCreator.createTextMessage();
             message.setText(jsonObj);
             return message;
@@ -59,6 +63,13 @@ public class JmsMessageProducteurImpl implements JmsMessageProducteur {
         return jsonObj;
     }
 
+    @Override
+    public void sendVoteBroadcat(VoteBroadCastMessage voteBroadCastMessage) throws JsonProcessingException {
+
+        String jsonObj = sendMessage(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(voteBroadCastMessage), voteBroadcastTopic);
+
+        LOGGER.info("Message send to topic: " + voteBroadcastTopic + ", message: " + jsonObj);
+    }
     @Override
     public void sendDeniedAutorisation(RefusAutorisationMessage refusAutorisation) throws JsonProcessingException {
         try {

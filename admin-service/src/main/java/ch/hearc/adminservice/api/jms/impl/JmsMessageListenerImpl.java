@@ -7,6 +7,7 @@ import ch.hearc.adminservice.api.jms.deserializer.JsonDeserialisationException;
 import ch.hearc.adminservice.api.jms.deserializer.VoteJmsDeserializerMapper;
 import ch.hearc.adminservice.api.jms.models.DemandeReceivedMessage;
 import ch.hearc.adminservice.api.jms.models.SoumissionVoteMessage;
+import ch.hearc.adminservice.jms.models.VoteBroadCastMessage;
 import ch.hearc.adminservice.service.AutorisationService;
 import ch.hearc.adminservice.service.VoteService;
 import ch.hearc.adminservice.service.models.Demande;
@@ -90,13 +91,16 @@ public class JmsMessageListenerImpl implements JmsMessageListener {
 
                 //TODO Check si autorisation ok
                 VoteSubmitedResult voteSubmitedResult = voteService.validateVote(vote);
-
                 LOGGER.info("Vote submitted result: " + voteSubmitedResult.getMessage());
+
+                //Si traitement du vote ok
+                if(voteSubmitedResult.getSuccess()){
+                    voteService.publishVote(new VoteBroadCastMessage(vote.getCampagneIdentifiant(),vote.getObjetIdentifiant()));
+                }
+
             } catch (JsonDeserialisationException e) {
                 throw new RuntimeException(e);
             }
-
-
 
         }
     }
