@@ -27,9 +27,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void sendTestRestRequest() {
+    public String sendTestRestRequest() {
         String body = client.getGooglePage();
 
         logger.info("Retrieved google page : \n" + body);
+
+        return body;
     }
 }

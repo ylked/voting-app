@@ -20,8 +20,8 @@ public class TestController {
 
     @PostMapping("restTest")
     ResponseEntity<?> sendTestRest(){
-        service.sendTestRestRequest();
-        return ResponseEntity.ok().build();
+        String body = service.sendTestRestRequest();
+        return ResponseEntity.ok(body);
     }
 
 }

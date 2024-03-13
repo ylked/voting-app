@@ -5,5 +5,5 @@ import ch.hearc.votingservice.service.models.TestJms;
 public interface TestService {
     void sendTestMessage(TestJms message);
 
-    void sendTestRestRequest();
+    String sendTestRestRequest();
 }
