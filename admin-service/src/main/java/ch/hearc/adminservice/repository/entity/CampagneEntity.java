@@ -3,6 +3,7 @@ package ch.hearc.adminservice.repository.entity;
 import ch.hearc.adminservice.shared.CampagneStatus;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class CampagneEntity {
     private String nom;
 
     private String identifiant;
+    private LocalDateTime dateCreation;
 
     public List<ObjetEntity> getObjets() {
         return objets;
@@ -42,10 +44,11 @@ public class CampagneEntity {
     @Enumerated(EnumType.STRING)
     private CampagneStatus status;
 
-    public CampagneEntity(String identifiant, String nom, CampagneStatus status) {
+    public CampagneEntity(String identifiant, String nom, CampagneStatus status, LocalDateTime dateCreation) {
         this.identifiant = identifiant;
         this.status = CampagneStatus.CREATED;
         this.nom = nom;
+        this.dateCreation = dateCreation;
     }
 
     public Long getId() {
@@ -70,5 +73,13 @@ public class CampagneEntity {
 
     public void setIdentifiant(String identifiant) {
         this.identifiant = identifiant;
+    }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(LocalDateTime dateCreation) {
+        this.dateCreation = dateCreation;
     }
 }

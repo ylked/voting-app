@@ -3,6 +3,7 @@ package ch.hearc.adminservice.service.models;
 import ch.hearc.adminservice.repository.entity.CampagneEntity;
 import ch.hearc.adminservice.shared.CampagneStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ public class Campagne {
 
     private CampagneStatus status;
     private String identifiant;
+    private LocalDateTime dateCreation;
 
     private List<Objet> objets;
 
@@ -42,6 +44,7 @@ public class Campagne {
                 campagneEntity.getNom(),
                 campagneEntity.getIdentifiant(),
                 campagneEntity.getStatus(),
+                campagneEntity.getDateCreation(),
                 campagneEntity.getObjets().stream().map(
                         Objet::mapFromEntityWithVotes)
                     .toList());
@@ -52,6 +55,7 @@ public class Campagne {
         this.nom = nom;
         this.status = CampagneStatus.CREATED;
         this.identifiant = UUID.randomUUID().toString();
+        this.dateCreation = LocalDateTime.now();
     }
 
     private Campagne(String nom, String identifiant, CampagneStatus status) {
@@ -65,9 +69,17 @@ public class Campagne {
         this.objets = objets;
     }
 
+    public Campagne(String nom, String identifiant, CampagneStatus status, LocalDateTime dateCreation, List<Objet> objets) {
+        this.nom = nom;
+        this.status = status;
+        this.identifiant = identifiant;
+        this.dateCreation = dateCreation;
+        this.objets = objets;
+    }
+
     public CampagneEntity mapToEntity(){
         return new CampagneEntity(
-                this.identifiant, this.nom, this.status);
+                this.identifiant, this.nom, this.status, this.dateCreation);
     }
 
 
@@ -81,5 +93,9 @@ public class Campagne {
 
     public String getIdentifiant() {
         return identifiant;
+    }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
     }
 }

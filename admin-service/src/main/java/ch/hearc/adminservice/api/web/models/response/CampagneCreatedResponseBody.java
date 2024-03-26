@@ -5,10 +5,12 @@ public class CampagneCreatedResponseBody {
     private String message = "Campagne successfully created";
 
     private String campagneIdentifiant;
+    private String dateCreation;
 
 
-    public CampagneCreatedResponseBody(String campagneIdentifiant){
+    public CampagneCreatedResponseBody(String campagneIdentifiant, String dateCreationStr){
         this.campagneIdentifiant = campagneIdentifiant;
+        this.dateCreation = dateCreationStr;
     }
 
     public String getMessage() {
@@ -17,5 +19,9 @@ public class CampagneCreatedResponseBody {
 
     public String getCampagneIdentifiant() {
         return campagneIdentifiant;
+    }
+
+    public String getDateCreation() {
+        return dateCreation;
     }
 }

@@ -5,6 +5,8 @@ import ch.hearc.adminservice.service.models.Campagne;
 import ch.hearc.adminservice.service.models.Objet;
 import ch.hearc.adminservice.shared.CampagneStatus;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public class CampagneResponseBody {
     private CampagneStatus status;
     private String identifiant;
     private List<ObjetBody> objets;
+    private LocalDateTime dateCreation;
 
     private static ObjetBody apply(Objet objet) {
         return new ObjetBody(objet.getNom(), objet.getIdentifiant());
@@ -35,16 +38,24 @@ public class CampagneResponseBody {
         return identifiant;
     }
 
+    public String getDateCreation() {
+        return dateCreation.toString();
+    }
+
+    public long getDaysFromCreation() {
+        return ChronoUnit.DAYS.between(dateCreation, LocalDateTime.now());
+    }
 
     public List<ObjetBody> getObjets() {
         return objets;
     }
 
-    private CampagneResponseBody(String nom, String identifiant, CampagneStatus status, List<ObjetBody> objets) {
+    private CampagneResponseBody(String nom, String identifiant, CampagneStatus status, List<ObjetBody> objets, LocalDateTime dateCreation) {
         this.nom = nom;
         this.identifiant = identifiant;
         this.status = status;
         this.objets = objets;
+        this.dateCreation = dateCreation;
     }
 
 
@@ -54,7 +65,8 @@ public class CampagneResponseBody {
                 campagne.getNom(),
                 campagne.getIdentifiant(),
                 campagne.getStatus(),
-                    campagne.getObjets().stream().map(CampagneResponseBody::apply).toList()
+                    campagne.getObjets().stream().map(CampagneResponseBody::apply).toList(),
+                campagne.getDateCreation()
                 );
     }
 
